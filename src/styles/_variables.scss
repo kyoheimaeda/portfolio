@@ -1,9 +1,12 @@
-$color-black: #000;
-$color-white: #fff;
-$color-background: #fff;
-$color-text: #1C1C1E;
+:root {
+	--color-black: #000;
+	--color-white: #fff;
+	
+	--color-background: #fff;
+	--color-text: #1C1C1E;
+}
 
-@media (prefers-color-scheme: dark) {
-	$color-background: #1C1C1E;
-	$color-text: #fff;
+html.dark {
+	--color-background: #1C1C1E;
+	--color-text: #fff;
 }

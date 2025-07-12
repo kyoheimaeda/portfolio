@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import PageMotion from '@/components/PageMotion';
 import ColorChanger from '@/components/ColorChanger';
+import ThemeProvider from '@/components/ThemeProvider';
 
 export const metadata: Metadata = {
   title: {
@@ -19,11 +20,13 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
     <html lang="ja" className={fontVariables}>
       <body>
         <ColorChanger />
-        <PageMotion>
-          <Header />
-            {children}
-          <Footer />
-        </PageMotion>
+        <ThemeProvider>
+          <PageMotion>
+            <Header />
+              {children}
+            <Footer />
+          </PageMotion>
+        </ThemeProvider>
       </body>
     </html>
   );

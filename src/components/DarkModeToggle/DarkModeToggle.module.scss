@@ -1,0 +1,32 @@
+@use 'styles/base' as *;
+
+.darkModeToggle {
+	position: fixed;
+	top: 10rem;
+	left: 4rem;
+	z-index: 1001;
+	background: none;
+	border: none;
+	cursor: pointer;
+
+	@include respond(md) {
+		top: 9rem;
+		left: 3rem;
+	}
+
+	@include respond(sm) {
+		top: 8rem;
+		left: 2rem;
+	}
+
+	svg {
+		width: 4rem;
+		height: 4rem;
+		color: var(--color-text);
+		@include transition(color, 0.3s, ease);
+	}
+
+	&:hover svg {
+		color: var(--color-primary);
+	}
+}
