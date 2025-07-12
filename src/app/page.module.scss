@@ -9,6 +9,7 @@
 	justify-content: flex-end;
 	font-family: var(--font-outfit);
 	gap: 0;
+	z-index: 1;
 }
 
 .textGroup {
@@ -22,13 +23,22 @@
 	align-items: center;
 	justify-content: center;
 	gap: 1rem;
+	z-index: 2;
 }
 
 .title{
-	font-size: 5vw;
+	font-size: 7vw;
 	line-height: 1em;
 	letter-spacing: .2em;
 	font-weight: 800;
+
+	@include respond(md) {
+		font-size: 10vw;
+	}
+
+	@include respond(sm) {
+		font-size: 14vw;
+	}
 
 	span {
 		color: var(--color-primary);
@@ -37,7 +47,15 @@
 }
 
 .text {
-	font-size: 1.5vw;
+	font-size: 2.06vw;
 	font-weight: 800;
 	letter-spacing: .2em;
+
+	@include respond(md) {
+		font-size: 2.95vw;
+	}
+
+	@include respond(sm) {
+		font-size: 4.15vw;
+	}
 }

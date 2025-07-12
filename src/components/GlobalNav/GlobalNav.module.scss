@@ -11,7 +11,17 @@
 	grid-template-rows: 1fr 1fr;
 	background: none;
 	border: none;
-	z-index: 3;
+	z-index: 1001;
+
+	@include respond(md) {
+		top: 3rem;
+		left: 3rem;
+	}
+
+	@include respond(sm) {
+		top: 2rem;
+		left: 2rem;
+	}
 	
 	span {
 		width: 100%;
@@ -88,7 +98,7 @@
 	align-items: center;
 	justify-content: center;
 	background: $color-background;
-	z-index: 1;
+	z-index: 1000;
 	transform: translateX(-100%);
 	@include transition(all, 0.3s, ease);
 
