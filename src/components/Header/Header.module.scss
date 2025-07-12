@@ -10,7 +10,7 @@
 
 	&Title {
 		position: relative;
-		color: var(--color-white);
+		color: $color-white;
 		z-index: 2;
 		mix-blend-mode: difference;
 		font-size: 4rem;
