@@ -1,7 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { Engine, Render, Runner, Bodies, Composite } from 'matter-js';
+import {
+  Engine,
+  Render,
+  Runner,
+  Bodies,
+  Composite,
+  Mouse,
+  MouseConstraint,
+} from 'matter-js';
 import styles from './MatterArea.module.scss';
 
 export default function MatterArea() {
@@ -11,6 +19,7 @@ export default function MatterArea() {
     const scene = sceneRef.current;
     if (!scene) return;
 
+    // Matter.js エンジンとレンダラー
     const engine = Engine.create();
     const width = scene.clientWidth;
     const height = scene.clientHeight;
@@ -26,38 +35,35 @@ export default function MatterArea() {
       },
     });
 
-    // 床の追加
+    // 地面と左右の壁を追加
     const ground = Bodies.rectangle(width / 2, height + 50, width, 100, {
       isStatic: true,
     });
 
-    // 右壁の追加（右端にはみ出し防止）
-    const rightWall = Bodies.rectangle(
-      width,       // x: 右端から5px内側
-      height / 2,      // y: 高さの中央
-      10,              // 幅: 10px
-      height * 2,      // 高さ: 画面の2倍くらいの高さ（十分な高さを確保）
-      {
-        isStatic: true,
-      }
-    );
+    const rightWall = Bodies.rectangle(width, height / 2, 10, height * 2, {
+      isStatic: true,
+    });
 
-    // 左壁の追加（左端にはみ出し防止）
-    const leftWall = Bodies.rectangle(
-      0, // x: 左端
-      height / 2, // y: 高さの中央
-      10, // 幅: 10px
-      height * 2, // 高さ: 画面の2倍
-      {
-        isStatic: true,
-      }
-    );
+    const leftWall = Bodies.rectangle(0, height / 2, 10, height * 2, {
+      isStatic: true,
+    });
 
     Composite.add(engine.world, [ground, rightWall, leftWall]);
 
-    // 画像のパス配列
+    // ✅ マウスドラッグ可能にする
+    const mouse = Mouse.create(render.canvas);
+    const mouseConstraint = MouseConstraint.create(engine, {
+      mouse,
+      constraint: {
+        stiffness: 0.2,
+        render: { visible: false },
+      },
+    });
+    Composite.add(engine.world, mouseConstraint);
+    render.mouse = mouse; // これ重要！
+
+    // 画像を追加する関数
     const imagePaths = [
-      // languages
       '/images/top/matter/css3.svg',
       '/images/top/matter/sass.svg',
       '/images/top/matter/html5.svg',
@@ -69,55 +75,45 @@ export default function MatterArea() {
       '/images/top/matter/ts.svg',
       '/images/top/matter/js.svg',
       '/images/top/matter/webpack.svg',
-      //tools
       '/images/top/matter/github.svg',
       '/images/top/matter/gitlab.svg',
       '/images/top/matter/bitbucket.svg',
       '/images/top/matter/vscode.svg',
-      //design
       '/images/top/matter/ps.svg',
       '/images/top/matter/figma.svg',
     ];
 
-    const getResponsiveSize = (width: number) => {
-      if (width <= 480) return 40; // スマホ
-      if (width <= 768) return 56; // タブレット
-      return 72; // PC
+    const getResponsiveSize = (w: number) => {
+      if (w <= 480) return 60;
+      if (w <= 768) return 72;
+      return 80;
     };
 
     imagePaths.forEach((src) => {
       const img = new Image();
       img.src = `${window.location.origin}${src}`;
       img.onload = () => {
-        const size = getResponsiveSize(width); // 画像のサイズ
-        const paddingRight = 10; // 壁の幅に合わせて余白を10pxに
+        const size = getResponsiveSize(width);
+        const paddingRight = 10;
 
-        // 右下付近に落とすX座標範囲を壁の内側に制限
         const minX = width * 0.7 + size / 2;
         const maxX = width - size / 2 - paddingRight;
         const randomX = Math.random() * (maxX - minX) + minX;
 
-        // Y座標は上〜画面中央くらいにランダム
         const minY = -100;
         const maxY = height / 2;
         const randomY = Math.random() * (maxY - minY) + minY;
 
-        const body = Bodies.rectangle(
-          randomX,
-          randomY,
-          size,
-          size,
-          {
-            restitution: 0.8,
-            render: {
-              sprite: {
-                texture: img.src,
-                xScale: size / img.width || 1,
-                yScale: size / img.height || 1,
-              },
+        const body = Bodies.rectangle(randomX, randomY, size, size, {
+          restitution: 0.8,
+          render: {
+            sprite: {
+              texture: img.src,
+              xScale: size / img.width || 1,
+              yScale: size / img.height || 1,
             },
-          }
-        );
+          },
+        });
         Composite.add(engine.world, body);
       };
     });
@@ -126,7 +122,7 @@ export default function MatterArea() {
     const runner = Runner.create();
     Runner.run(runner, engine);
 
-    // クリーンアップ
+    // クリーンアップ処理
     return () => {
       Render.stop(render);
       Runner.stop(runner);

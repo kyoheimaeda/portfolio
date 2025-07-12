@@ -9,8 +9,10 @@ export default function Home() {
     <>
       <section className={styles.section}>
         <div className={styles.textGroup}>
-          <h1 className={styles.title}><span>K</span>YOHEI<br />MAEDA</h1>
-          <p className={styles.text}>FRONT-END DEVELOPER.</p>
+          <h1 className={styles.title}>
+            <div><strong>K</strong>YOHEI</div>
+            <div>MAEDA</div></h1>
+          <p className={styles.text}>FRONT-END <strong>DEVELOPER</strong></p>
         </div>
         <MatterArea />
       </section>
