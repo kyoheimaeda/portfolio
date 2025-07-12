@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
   return (
-    <html lang="en" className={fontVariables}>
+    <html lang="ja" className={fontVariables}>
       <body>
         <ColorChanger />
         <PageMotion>
