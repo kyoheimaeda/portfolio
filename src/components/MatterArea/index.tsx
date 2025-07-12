@@ -33,7 +33,7 @@ export default function MatterArea() {
 
     // 右壁の追加（右端にはみ出し防止）
     const rightWall = Bodies.rectangle(
-      width - 5,       // x: 右端から5px内側
+      width,       // x: 右端から5px内側
       height / 2,      // y: 高さの中央
       10,              // 幅: 10px
       height * 2,      // 高さ: 画面の2倍くらいの高さ（十分な高さを確保）
@@ -42,7 +42,18 @@ export default function MatterArea() {
       }
     );
 
-    Composite.add(engine.world, [ground, rightWall]);
+    // 左壁の追加（左端にはみ出し防止）
+    const leftWall = Bodies.rectangle(
+      0, // x: 左端
+      height / 2, // y: 高さの中央
+      10, // 幅: 10px
+      height * 2, // 高さ: 画面の2倍
+      {
+        isStatic: true,
+      }
+    );
+
+    Composite.add(engine.world, [ground, rightWall, leftWall]);
 
     // 画像のパス配列
     const imagePaths = [
@@ -68,11 +79,17 @@ export default function MatterArea() {
       '/images/top/matter/figma.svg',
     ];
 
+    const getResponsiveSize = (width: number) => {
+      if (width <= 480) return 40; // スマホ
+      if (width <= 768) return 56; // タブレット
+      return 72; // PC
+    };
+
     imagePaths.forEach((src) => {
       const img = new Image();
       img.src = `${window.location.origin}${src}`;
       img.onload = () => {
-        const size = 72; // 画像のサイズ
+        const size = getResponsiveSize(width); // 画像のサイズ
         const paddingRight = 10; // 壁の幅に合わせて余白を10pxに
 
         // 右下付近に落とすX座標範囲を壁の内側に制限
