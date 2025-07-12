@@ -32,7 +32,7 @@
 
 	span {
 		color: var(--color-primary);
-		@include transition(0.3s, ease);
+		@include transition(all, 0.3s, ease);
 	}
 }
 

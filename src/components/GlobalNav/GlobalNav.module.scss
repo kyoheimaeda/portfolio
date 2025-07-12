@@ -23,7 +23,7 @@
     cursor: pointer;
 
 		&::before {
-			@include transition(0.2s, ease);
+			@include transition(all, 0.2s, ease);
 			display: block;
 			content: '';
 			width: 50%;
@@ -90,7 +90,7 @@
 	background: $color-background;
 	z-index: 1;
 	transform: translateX(-100%);
-	@include transition(0.3s, ease);
+	@include transition(all, 0.3s, ease);
 
 	&List {
 		list-style: none;
@@ -109,7 +109,7 @@
 
 		&:hover {
 			color: var(--color-primary);
-			@include transition(0.3s, ease);
+			@include transition(all, 0.3s, ease);
 		}
 	}
 }
