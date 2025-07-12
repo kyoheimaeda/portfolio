@@ -1,0 +1,115 @@
+@use 'styles/base' as *;
+
+.navToggle {
+	position: fixed;
+	top: 4rem;
+	left: 4rem;
+	width: 4rem;
+	height: 4rem;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr 1fr;
+	background: none;
+	border: none;
+	z-index: 3;
+	
+	span {
+		width: 100%;
+		height: 100%;
+		display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+		&::before {
+			@include transition(0.2s, ease);
+			display: block;
+			content: '';
+			width: 50%;
+			height: 50%;
+			background: var(--color-text);
+		}
+	}
+
+	&.isOpen {
+		span {
+			&::before {
+				width: 60%;
+				height: 60%;
+			}
+			&:nth-of-type(1) {
+				&::before {
+					width: .2rem;
+					transform: rotate(-45deg) translate(0, .3rem);
+				}
+			}
+			&:nth-of-type(2) {
+				&::before {
+					height: .2rem;
+					transform: rotate(-45deg) translate(-.3rem, 0);
+				}
+			}
+			&:nth-of-type(3) {
+				&::before {
+					height: .2rem;
+					transform: rotate(-45deg) translate(.3rem, 0);
+				}
+			}
+			&:nth-of-type(4) {
+				&::before {
+					width: .2rem;
+					transform: rotate(-45deg) translate(0, -.3rem);
+				}
+			}
+		}
+	}
+
+	&:hover {
+		span {
+			&::before {
+				background: var(--color-primary);
+				transform: rotate(90deg);
+			}
+		}
+	}
+}
+
+
+
+.nav {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: var(--color-background);
+	z-index: 1;
+	transform: translateX(-100%);
+	@include transition(0.3s, ease);
+
+	&List {
+		list-style: none;
+	}
+
+	&.isOpen {
+		pointer-events: auto;
+		transform: translateX(0);
+	}
+
+	a {
+		font-size: 5rem;
+		font-family: var(--font-outfit);
+		font-weight: 600;
+		letter-spacing: .1em;
+
+		&:hover {
+			color: var(--color-primary);
+			@include transition(0.3s, ease);
+		}
+	}
+}

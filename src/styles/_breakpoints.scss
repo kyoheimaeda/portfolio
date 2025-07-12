@@ -1,0 +1,29 @@
+//ブレークポイントの設定
+$breakpoints: (
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  2xl: 1536px
+);
+
+// メディアクエリ用 Mixin
+@mixin respond($breakpoint, $type: 'max') {
+  @if map-has-key($breakpoints, $breakpoint) {
+    $width: map-get($breakpoints, $breakpoint);
+
+    @if $type == 'min' {
+      @media (min-width: $width) {
+        @content;
+      }
+    } @else if $type == 'max' {
+      @media (max-width: $width) {
+        @content;
+      }
+    } @else {
+      @warn "Unknown type `#{$type}`. Use 'min' or 'max'.";
+    }
+  } @else {
+    @warn "Breakpoint `#{$breakpoint}` is not defined.";
+  }
+}

@@ -1,0 +1,9 @@
+.matter {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+  width: 100%;
+  height: 200vh; // 落ちる空間をしっかり確保
+  position: relative;
+  overflow: hidden;
+}

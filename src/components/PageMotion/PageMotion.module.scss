@@ -1,0 +1,18 @@
+@use 'styles/base' as *;
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--color-primary);
+  z-index: 9999;
+  pointer-events: none;
+	@include transition(background-color, .3s, ease);
+}
+
+.content {
+  position: relative;
+  z-index: 0;
+}

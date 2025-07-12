@@ -9,17 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "jotai": "^2.12.5",
+    "lucide-react": "^0.525.0",
+    "matter-js": "^0.20.0",
+    "motion": "^12.23.3",
+    "next": "15.3.5",
     "react": "^19.0.0",
+    "react-devicons": "^2.16.2",
     "react-dom": "^19.0.0",
-    "next": "15.3.5"
+    "sass": "^1.89.2"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@types/matter-js": "^0.19.8",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
-    "@eslint/eslintrc": "^3"
+    "typescript": "^5"
   }
 }
