@@ -3,9 +3,9 @@ import { fontVariables } from '@/lib/fonts'
 import "@/styles//globals.scss";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import PageMotion from '@/components/PageMotion';
-import ColorChanger from '@/components/ColorChanger';
 import ThemeProvider from '@/components/ThemeProvider';
+import MouseFollower from '@/components/MouseFollower';
+import Template from "./template";
 
 export const metadata: Metadata = {
   title: {
@@ -19,14 +19,14 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
   return (
     <html lang="ja" className={fontVariables}>
       <body>
-        <ColorChanger />
         <ThemeProvider>
-          <PageMotion>
-            <Header />
+          <Header />
+          <Template>
               {children}
-            <Footer />
-          </PageMotion>
+          </Template>
+          <Footer />
         </ThemeProvider>
+        <MouseFollower />
       </body>
     </html>
   );

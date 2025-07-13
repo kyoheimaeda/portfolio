@@ -1,24 +1,22 @@
 // components/ThemeToggle.tsx
 'use client';
 
-import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { ThemeAtom } from '@/atoms/ThemeAtom';
+import { Moon, Sun } from 'lucide-react';
+import styles from "./ThemeToggle.module.scss";
+
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useAtom(ThemeAtom);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
-
   return (
-    <button onClick={toggleTheme}>
-      {theme === 'dark' ? 'ライトモードにする' : 'ダークモードにする'}
+    <button
+      className={styles.darkModeToggle}
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      aria-label="Toggle Dark Mode"
+    >
+      {theme === 'dark' ? <Sun /> : <Moon />}
     </button>
   );
 }

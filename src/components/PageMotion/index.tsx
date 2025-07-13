@@ -29,7 +29,6 @@ export default function PageMotion({ children }: { children: React.ReactNode }) 
 
   return (
     <>
-      {/* 黒背景スライド */}
       <AnimatePresence mode="wait">
         {showOverlay && (
           <motion.div

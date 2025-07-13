@@ -1,6 +1,7 @@
 @use 'styles/base' as *;
+@use 'styles/fonts';
 
-.section {
+.fv {
 	position: relative;
 	width: 100vw;
 	height: 100svh;
@@ -12,7 +13,7 @@
 	z-index: 1;
 }
 
-.textGroup {
+.fvTexts {
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -25,11 +26,19 @@
 	z-index: 2;
 }
 
-.title{
+.fvTitle {
 	font-size: 7vw;
-	line-height: 1em;
-	letter-spacing: .2em;
+	line-height: 1.5em;
+	letter-spacing: .3em;
 	font-weight: 800;
+	font-family: 'Anurati', sans-serif;
+	display: grid;
+	grid-template-columns: 1fr;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	white-space: nowrap;
+	position: relative;
 
 	@include respond(md) {
 		font-size: 10vw;
@@ -40,9 +49,7 @@
 	}
 
 	div {
-		&:nth-of-type(2) {
-			letter-spacing: .28em;
-		}
+		@include glitch();
 	}
 
 	strong {
@@ -52,16 +59,20 @@
 	}
 }
 
-.text {
-	font-size: 2.14vw;
+.fvText {
+	font-size: 2vw;
 	font-weight: 900;
-	letter-spacing: .2em;
+	letter-spacing: .38em;
 	margin-left: -.4em;
+	display: flex;
+	gap: .5em;
+	white-space: nowrap;
 
 	strong {
 		color: var(--color-primary);
 		@include transition(all, 0.3s, ease);
 		font-weight: 900;
+		@include glitchColor();
 	}
 
 	@include respond(md) {

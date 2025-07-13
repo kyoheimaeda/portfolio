@@ -21,16 +21,16 @@ export default function GlobalNav() {
 			<nav className={`${styles.nav} ${isOpen ? styles.isOpen : ''} ${pathname === '/' ? styles.isHome : ''}`}>
 				<ul className={styles.navList}>
 					<li className={styles.navItem}>
-						<Link href="/" onClick={closeNav}>HOME</Link>
+						<Link href="/" onClick={closeNav} data-text="HOME">HOME</Link>
 					</li>
 					<li className={styles.navItem}>
-						<Link href="/about" onClick={closeNav}>ABOUT</Link>
+						<Link href="/about" onClick={closeNav} data-text="ABOUT">ABOUT</Link>
 					</li>
 					<li className={styles.navItem}>
-						<Link href="/projects" onClick={closeNav}>PROJECTS</Link>
+						<Link href="/projects" onClick={closeNav} data-text="PROJECTS">PROJECTS</Link>
 					</li>
 					<li className={styles.navItem}>
-						<Link href="/contact" onClick={closeNav}>CONTACT</Link>
+						<Link href="/contact" onClick={closeNav} data-text="CONTACT">CONTACT</Link>
 					</li>
 				</ul>
 			</nav>

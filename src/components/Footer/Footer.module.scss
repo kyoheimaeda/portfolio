@@ -1,7 +1,21 @@
 @use 'styles/base' as *;
 
 .footer {
+	width: 100%;
 	position: absolute;
 	bottom: 0;
 	left: 0;
+
+	&.isHome {
+		position: fixed;
+	}
+}
+
+.copyright {
+	text-align: center;
+	padding: 1em;
+	font-size: 1rem;
+	font-family: var(--font-outfit);
+	font-weight: 600;
+	letter-spacing: .2em;
 }

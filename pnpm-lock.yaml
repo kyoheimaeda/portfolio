@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@icons-pack/react-simple-icons':
+        specifier: ^13.4.0
+        version: 13.4.0(react@19.1.0)
       jotai:
         specifier: ^2.12.5
         version: 2.12.5(@types/react@19.1.8)(react@19.1.0)
@@ -26,9 +29,6 @@ importers:
       react:
         specifier: ^19.0.0
         version: 19.1.0
-      react-devicons:
-        specifier: ^2.16.2
-        version: 2.16.2
       react-dom:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
@@ -129,6 +129,11 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@icons-pack/react-simple-icons@13.4.0':
+    resolution: {integrity: sha512-SBBR2Jq88IEhr5NEg22MtF5WxlC6B5uRgXCL8tFHS/CBr5WBepEIFIcHG8ijNjfjIQa8YuO73Q2UvVHoM148fA==}
+    peerDependencies:
+      react: ^16.13 || ^17 || ^18 || ^19
 
   '@img/sharp-darwin-arm64@0.34.3':
     resolution: {integrity: sha512-ryFMfvxxpQRsgZJqBd4wsttYQbCxsJksrv9Lw/v798JcQ8+w84mBWuXwl+TT0WJ/WrYOLaYpwQXi3sA9nTIaIg==}
@@ -1486,9 +1491,6 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  react-devicons@2.16.2:
-    resolution: {integrity: sha512-oVNx7pRIW5UfvSZGlvUICvBL54DfL/rGJWyf/5qJFCG9Cd4zzul0yYE0cKJASvQDPzjARhOq07No9SoQlURrFA==}
-
   react-dom@19.1.0:
     resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==}
     peerDependencies:
@@ -1496,10 +1498,6 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
-
-  react@18.3.1:
-    resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
-    engines: {node: '>=0.10.0'}
 
   react@19.1.0:
     resolution: {integrity: sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg==}
@@ -1840,6 +1838,10 @@ snapshots:
   '@humanwhocodes/retry@0.3.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@icons-pack/react-simple-icons@13.4.0(react@19.1.0)':
+    dependencies:
+      react: 19.1.0
 
   '@img/sharp-darwin-arm64@0.34.3':
     optionalDependencies:
@@ -3283,20 +3285,12 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  react-devicons@2.16.2:
-    dependencies:
-      react: 18.3.1
-
   react-dom@19.1.0(react@19.1.0):
     dependencies:
       react: 19.1.0
       scheduler: 0.26.0
 
   react-is@16.13.1: {}
-
-  react@18.3.1:
-    dependencies:
-      loose-envify: 1.4.0
 
   react@19.1.0: {}
 
