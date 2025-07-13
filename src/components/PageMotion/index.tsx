@@ -62,10 +62,6 @@ export default function PageMotion({ children }: { children: React.ReactNode }) 
             <motion.p
               className={styles.overlayText}
               data-text="KYOHEI MAEDA"
-              style={{
-                translateX: "-50%",
-                translateY: "-50%",
-              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
