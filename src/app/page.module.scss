@@ -48,7 +48,7 @@
 		font-size: 14vw;
 	}
 
-	div {
+	&Line {
 		@include glitch();
 	}
 
