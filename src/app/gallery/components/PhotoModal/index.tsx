@@ -13,21 +13,33 @@ type Props = {
 
 export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Props) {
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (isOpen && originRef.current) {
       setOriginRect(originRef.current.getBoundingClientRect());
+      setVisible(true);
     }
   }, [isOpen, originRef]);
+
+  const handleClose = () => {
+    setVisible(false);
+  };
 
   if (!originRect) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
+    <AnimatePresence
+      onExitComplete={() => {
+        // exitアニメーションが完了したら完全に閉じる
+        setOriginRect(null);
+        onClose();
+      }}
+    >
+      {visible && (
         <motion.div
           className="photo-modal-overlay"
-          onClick={onClose}
+          onClick={handleClose}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -37,7 +49,7 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
             left: 0,
             width: '100vw',
             height: '100vh',
-            background: 'rgba(0,0,0,0.7)',
+            background: 'rgba(0,0,0,0.9)',
             zIndex: 1000,
           }}
         >
@@ -67,7 +79,7 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
               x: 0,
               y: 0,
             }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
             style={{
               position: 'fixed',
               zIndex: 1001,
@@ -77,7 +89,7 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
               alignItems: 'center',
               overflow: 'hidden',
             }}
-            onClick={onClose}
+            onClick={handleClose}
           >
             <img
               src={photoUrl}
