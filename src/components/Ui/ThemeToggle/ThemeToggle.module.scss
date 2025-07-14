@@ -2,7 +2,7 @@
 
 .darkModeToggle {
 	position: fixed;
-	top: 10rem;
+	top: 9.5rem;
 	right: 4rem;
 	z-index: 1001;
 	background: none;
@@ -11,28 +11,31 @@
 	mix-blend-mode: difference;
 
 	@include respond(md) {
-		top: 9rem;
+		top: 8.5rem;
 		right: 3rem;
 	}
 
 	@include respond(sm) {
-		top: 6rem;
+		top: 7.5rem;
 		right: 2rem;
 	}
 
-	svg {
+	.icon {
 		width: 4rem;
 		height: 4rem;
 		color: var(--color-white);
-		@include transition(color, 0.3s, ease);
+		@include transition(all, 0.3s, ease);
 
-		@include respond(sm) {
-			width: 3rem;
-			height: 3rem;
+		&.isDark {
+			transform: rotateY(0deg);
+		}
+
+		&.isLight {
+			transform: rotateY(-180deg);
 		}
 	}
 
-	&:hover svg {
+	&:hover .icon {
 		color: var(--color-primary);
 	}
 }

@@ -3,7 +3,7 @@
 
 import { useAtom } from 'jotai';
 import { ThemeAtom } from '@/atoms/ThemeAtom';
-import { Moon, Sun } from 'lucide-react';
+import { MdContrast } from "react-icons/md";
 import styles from "./ThemeToggle.module.scss";
 
 
@@ -16,7 +16,7 @@ export default function ThemeToggle() {
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       aria-label="Toggle Dark Mode"
     >
-      {theme === 'dark' ? <Sun /> : <Moon />}
+      <MdContrast className={`${styles.icon} ${theme === 'dark' ? styles.isDark : styles.isLight}`} />
     </button>
   );
 }

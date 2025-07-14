@@ -1,23 +1,35 @@
 'use client'
 import { usePathname } from 'next/navigation';
-import { useState } from 'react'
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import styles from "./GlobalNav.module.scss";
 
 export default function GlobalNav() {
 	const pathname = usePathname();
-	const [isOpen, setIsOpen] = useState<boolean>(false)
-	const closeNav = () => setIsOpen(false)
+	const [isOpen, setIsOpen] = useState(false);
+	const [isMounted, setIsMounted] = useState(false); // ← 追加
+
+	useEffect(() => {
+		setIsMounted(true); // クライアントマウント後に有効に
+	}, []);
+
+	const closeNav = () => setIsOpen(false);
+
+	// サーバー側では描画しない（hydration mismatchを防ぐ）
+	if (!isMounted) return null;
 
 	return (
 		<>
-			<button className={`${styles.navToggle} ${isOpen ? styles.isOpen : ''}  ${pathname === '/' ? styles.isHome : ''}`} onClick={() => setIsOpen(!isOpen)}>
+			<button
+				className={`${styles.navToggle} ${isOpen ? styles.isOpen : ''} ${pathname === '/' ? styles.isHome : ''}`}
+				onClick={() => setIsOpen(!isOpen)}
+			>
 				<span></span>
 				<span></span>
 				<span></span>
 				<span></span>
 			</button>
-			
+
 			<nav className={`${styles.nav} ${isOpen ? styles.isOpen : ''} ${pathname === '/' ? styles.isHome : ''}`}>
 				<ul className={styles.navList}>
 					<li className={styles.navItem}>
@@ -27,7 +39,7 @@ export default function GlobalNav() {
 						<Link href="/about" onClick={closeNav} data-text="ABOUT">ABOUT</Link>
 					</li>
 					<li className={styles.navItem}>
-						<Link href="/projects" onClick={closeNav} data-text="PROJECTS">PROJECTS</Link>
+						<Link href="/gallery" onClick={closeNav} data-text="GALLERY">GALLERY</Link>
 					</li>
 					<li className={styles.navItem}>
 						<Link href="/contact" onClick={closeNav} data-text="CONTACT">CONTACT</Link>

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { fontVariables } from '@/lib/fonts'
 import "@/styles//globals.scss";
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import ThemeProvider from '@/components/ThemeProvider';
+import Header from '@/components/Layout/Header';
+import Footer from '@/components/Layout/Footer';
+import ThemeProvider from '@/components/Ui/ThemeProvider';
 import MouseFollower from '@/components/MouseFollower';
 import Template from "./template";
 
