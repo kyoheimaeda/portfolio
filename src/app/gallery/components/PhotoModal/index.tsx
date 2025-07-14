@@ -6,7 +6,7 @@ import { AnimatePresence } from 'motion/react';
 
 type Props = {
   photoUrl: string;
-  originRef: React.RefObject<HTMLImageElement>;
+  originRef: React.RefObject<HTMLElement | null>;
   isOpen: boolean;
   onClose: () => void;
 };
@@ -48,14 +48,16 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
               top: originRect.top,
               left: originRect.left,
               position: 'fixed',
+              x: 0,
+              y: 0,
             }}
             animate={{
-              width: '90vw',
-              height: '90vh',
-              top: '50%',
-              left: '50%',
-              x: '-50%',
-              y: '-50%',
+              width: window.innerWidth * 0.9,
+              height: window.innerHeight * 0.9,
+              top: window.innerHeight / 2,
+              left: window.innerWidth / 2,
+              x: -(window.innerWidth * 0.9) / 2,
+              y: -(window.innerHeight * 0.9) / 2,
             }}
             exit={{
               width: originRect.width,
@@ -65,7 +67,7 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
               x: 0,
               y: 0,
             }}
-            transition={{ duration: 0.5, easing: 'ease-in-out' }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
             style={{
               position: 'fixed',
               zIndex: 1001,

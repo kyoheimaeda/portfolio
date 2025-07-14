@@ -2,8 +2,8 @@ import { createClient } from '@/lib/supabaseClient';
 
 export default async function GalleryPage() {
   const { data: photos } = await createClient()
-    .from('photos')  // ここはDBテーブル名。imagesはバケット名なので関係ありません
-    .select('url')
+    .from('photos')
+    .select('url, created_at')  // created_atも取得する
     .order('created_at', { ascending: false });
 
   return (

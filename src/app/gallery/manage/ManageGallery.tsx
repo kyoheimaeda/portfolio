@@ -4,7 +4,13 @@ import { useState } from 'react';
 import PhotoUploader from '../components/PhotoUploader';
 import PhotoManager from '../components/PhotoManager';
 
-export default function ManageGallery({ photos }: { photos: any[] }) {
+type Photo = {
+  id: string;
+  url: string;
+  created_at: string;
+};
+
+export default function ManageGallery({ photos }: { photos: Photo[] }) {
   const [view, setView] = useState<'upload' | 'manage'>('upload');
 
   return (

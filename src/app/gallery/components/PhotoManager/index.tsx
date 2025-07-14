@@ -2,7 +2,13 @@
 
 import { createClient } from '@/lib/supabaseClient';
 
-export default function PhotoManager({ photos }: { photos: any[] }) {
+type Photo = {
+  id: string;
+  url: string;
+  created_at: string;
+};
+
+export default function PhotoManager({ photos }: { photos: Photo[] }) {
   const handleDelete = async (id: string) => {
     const supabase = createClient();
     const { error } = await supabase.from('photos').delete().eq('id', id);

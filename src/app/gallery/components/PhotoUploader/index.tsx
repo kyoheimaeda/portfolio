@@ -29,11 +29,11 @@ export default function PhotoUploader() {
     }
 
     // 公開URLを取得
-    const { data: publicData, error: urlError } = supabase.storage
+    const { data: publicData } = supabase.storage
       .from('images')
       .getPublicUrl(fileName);
 
-    if (urlError || !publicData?.publicUrl) {
+    if (!publicData?.publicUrl) {
       alert('公開URLの取得に失敗しました');
       setUploading(false);
       return;

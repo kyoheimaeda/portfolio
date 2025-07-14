@@ -4,12 +4,21 @@ import { useState, useRef } from 'react';
 import PhotoModal from '../PhotoModal';
 import styles from "./index.module.scss";
 
-export default function ClientGallery({ photos }: { photos: any[] }) {
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const originRef = useRef<HTMLImageElement>(null);
+type Photo = {
+  id: string;
+  url: string;
+  created_at: string;
+};
 
-  const openPhotoModal = (url: string, e: React.MouseEvent<HTMLImageElement>) => {
-    originRef.current = e.currentTarget;
+export default function ClientGallery({ photos }: { photos: Photo[] }) {
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const originRef = useRef<HTMLElement>(null); // ★ 型を統一
+
+  const openPhotoModal = (url: string, e: React.MouseEvent<HTMLElement>) => {
+    const target = e.currentTarget.querySelector('img') as HTMLElement;
+    if (!target) return;
+
+    originRef.current = target;
     setSelectedPhoto(url);
   };
 
