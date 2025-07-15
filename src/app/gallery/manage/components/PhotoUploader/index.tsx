@@ -7,9 +7,10 @@ import { useState, useEffect } from 'react'; // useEffect を追加
 import { createClient } from '@/lib/supabaseClient';
 import { PhotoType } from '@/types/PhotoType';
 import { v4 as uuidv4 } from 'uuid';
+import Image from 'next/image'; // ★ next/image をインポート
 
-// SCSS モジュールのインポート
-import styles from './index.module.scss'; // ★ SCSSモジュールをインポート
+// SCSS モジュールのインポート (これはそのまま維持)
+import styles from './index.module.scss';
 
 // ----------------------------------------
 // Types
@@ -25,6 +26,7 @@ export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null); // 選択されたファイル名 (維持)
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null); // 選択された画像のプレビューURL
 
   // プレビューURLのクリーンアップ
@@ -41,6 +43,7 @@ export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
       setNotification(null); // ファイル選択時に通知をクリア
+      setSelectedFileName(selectedFile.name); // ファイル名を設定 (維持)
 
       // 画像ファイルの場合のみプレビューを生成
       if (selectedFile.type.startsWith('image/')) {
@@ -56,6 +59,7 @@ export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
       }
     } else {
       setFile(null);
+      setSelectedFileName(null); // ファイル名もリセット (維持)
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
       }
@@ -134,15 +138,23 @@ export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
       setNotification('アップロード成功！');
       onPhotoUploaded(insertedPhoto as PhotoType); // 新しい写真を親に通知
       setFile(null); // ファイル選択をリセット
+      setSelectedFileName(null); // ファイル名もリセット (維持)
       if (previewImageUrl) { // プレビューURLも解放してリセット
         URL.revokeObjectURL(previewImageUrl);
         setPreviewImageUrl(null);
       }
       setTimeout(() => setNotification(null), 3000);
 
-    } catch (err: any) {
-      console.error('予期せぬエラーが発生しました:', err);
-      setNotification(`予期せぬエラーが発生しました: ${err.message}`);
+    } catch (err: unknown) { // ★ any を unknown に修正
+      // エラーオブジェクトがどのような型であるか不明な場合、unknown を使用し、
+      // 必要に応じて型ガードでチェックする
+      if (err instanceof Error) {
+        console.error('予期せぬエラーが発生しました:', err);
+        setNotification(`予期せぬエラーが発生しました: ${err.message}`);
+      } else {
+        console.error('予期せぬエラーが発生しました:', err);
+        setNotification('予期せぬエラーが発生しました。');
+      }
       setTimeout(() => setNotification(null), 5000);
     } finally {
       setUploading(false); // 処理の成功・失敗に関わらずアップロード状態を解除
@@ -153,11 +165,11 @@ export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
   const notificationClass = isErrorNotification ? styles.notificationError : styles.notificationSuccess;
 
   return (
-    <section className={styles.section}>
-      <div className={styles.inputArea}>
-        <h2>Upload Image</h2>
+    <section className={styles.section}> {/* SCSSクラスを維持 */}
+      <div className={styles.inputArea}> {/* SCSSクラスを維持 */}
+        <h2>写真をアップロード</h2>
         {notification && (
-          <p className={`${styles.notification} ${notificationClass}`}> {/* ★ ここを修正 */}
+          <p className={`${styles.notification} ${notificationClass}`}> {/* ★ ここを修正済み */}
             {notification}
           </p>
         )}
@@ -166,22 +178,36 @@ export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
           accept="image/*"
           onChange={handleFileChange}
           disabled={uploading}
-          className={styles.fileInput}
+          className={styles.fileInput} // SCSSクラスを維持
         />
         <button
           onClick={handleUpload}
           disabled={!file || uploading}
-          className={styles.uploadButton}
+          className={styles.uploadButton} // SCSSクラスを維持
         >
           {uploading ? 'アップロード中...' : 'アップロード'}
         </button>
       </div>
 
       {/* 選択されたファイル名とプレビューの表示 */}
-      <div className={styles.previewArea}>
-        <div className={styles.imagePreview}>
-          {previewImageUrl && (
-            <img src={previewImageUrl} alt="選択された画像のプレビュー" />
+      <div className={styles.previewArea}> {/* SCSSクラスを維持 */}
+        <div className={styles.imagePreview}> {/* SCSSクラスを維持 */}
+          {previewImageUrl ? (
+            <Image // ★ <img> を <Image /> に変更
+              src={previewImageUrl}
+              alt="選択された画像のプレビュー"
+              width={300} // 適切な幅を設定
+              height={200} // 適切な高さを設定
+              layout="responsive" // 親要素の幅に合わせて自動リサイズ
+              objectFit="contain" // アスペクト比を維持しつつ要素に収める
+            />
+          ) : (
+            // ファイル名を表示するロジックを再追加
+            selectedFileName ? (
+              <p className={styles.fileName}>{selectedFileName}</p> // SCSSクラスを維持
+            ) : (
+              <p className={styles.noImageText}>画像が選択されていません。</p> // SCSSクラスを維持
+            )
           )}
         </div>
       </div>
