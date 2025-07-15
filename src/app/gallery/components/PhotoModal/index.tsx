@@ -1,8 +1,14 @@
 'use client';
 
+// ----------------------------------------
+// Imports
+
 import { useEffect, useState } from 'react';
 import * as motion from 'motion/react-client';
 import { AnimatePresence } from 'motion/react';
+
+// ----------------------------------------
+// Types
 
 type Props = {
   photoUrl: string;
@@ -10,6 +16,8 @@ type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
+
+// ----------------------------------------
 
 export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Props) {
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
@@ -44,13 +52,7 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100vw',
-            height: '100vh',
-            background: 'rgba(0,0,0,0.9)',
-            zIndex: 1000,
+            ...overlayStyle,
           }}
         >
           <motion.div
@@ -81,13 +83,7 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
             }}
             transition={{ duration: 0.4, ease: 'easeInOut' }}
             style={{
-              position: 'fixed',
-              zIndex: 1001,
-              cursor: 'zoom-out',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              overflow: 'hidden',
+              ...boxStyle,
             }}
             onClick={handleClose}
           >
@@ -95,10 +91,7 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
               src={photoUrl}
               alt="expanded"
               style={{
-                maxWidth: '100%',
-                maxHeight: '100%',
-                objectFit: 'contain',
-                borderRadius: 8,
+                ...imageStyle,
               }}
             />
           </motion.div>
@@ -106,5 +99,35 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
       )}
     </AnimatePresence>
   );
-  
 }
+
+// ----------------------------------------
+// Styles
+
+const overlayStyle = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100vw',
+  height: '100vh',
+  background: 'rgba(0,0,0,0.9)',
+  zIndex: 1000,
+}
+
+const boxStyle = {
+  position: 'fixed',
+  zIndex: 1001,
+  cursor: 'zoom-out',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  overflow: 'hidden',
+}
+
+const imageStyle = {
+  maxWidth: '100%',
+  maxHeight: '100%',
+  objectFit: 'contain',
+  borderRadius: 8,
+}
+

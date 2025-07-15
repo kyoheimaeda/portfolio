@@ -1,0 +1,27 @@
+.photoList {
+	max-width: 800px;
+	margin: auto;
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 2rem;
+
+	li {
+		display: flex;
+		align-items: center;
+
+		img {
+			
+		}
+	}
+}
+
+.dragHandle {
+	background: none;
+	border: none;
+	font-size: 4rem;
+
+	svg {
+		width: 4rem;
+		height: 4rem;
+	}
+}

@@ -3,18 +3,20 @@
 import { useState, useRef } from 'react';
 import PhotoModal from '../PhotoModal';
 import styles from "./index.module.scss";
+import { PhotoType } from '@/types/PhotoType';
 
-type Photo = {
-  id: string;
-  url: string;
-  created_at: string;
-};
-
-export default function ClientGallery({ photos }: { photos: Photo[] }) {
+export default function ClientGallery({
+  photos
+}: {
+  photos: PhotoType[] 
+}) {
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
-  const originRef = useRef<HTMLElement>(null); // ★ 型を統一
-
-  const openPhotoModal = (url: string, e: React.MouseEvent<HTMLElement>) => {
+  const originRef = useRef<HTMLElement>(null);
+  
+  const openPhotoModal = (
+    url: string,
+    e: React.MouseEvent<HTMLElement>
+  ) => {
     const target = e.currentTarget.querySelector('img') as HTMLElement;
     if (!target) return;
 
