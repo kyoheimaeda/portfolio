@@ -106,4 +106,5 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
       )}
     </AnimatePresence>
   );
+  
 }
