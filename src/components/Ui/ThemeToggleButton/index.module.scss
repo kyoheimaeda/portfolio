@@ -1,24 +1,10 @@
 @use 'styles/base' as *;
 
 .darkModeToggle {
-	position: fixed;
-	top: 9.5rem;
-	right: 4rem;
-	z-index: 1001;
 	background: none;
 	border: none;
 	cursor: pointer;
 	mix-blend-mode: difference;
-
-	@include respond(md) {
-		top: 8.5rem;
-		right: 3rem;
-	}
-
-	@include respond(sm) {
-		top: 7.5rem;
-		right: 2rem;
-	}
 
 	.icon {
 		width: 4rem;

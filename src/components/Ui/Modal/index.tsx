@@ -1,10 +1,9 @@
-// components/Ui/Modal/index.tsx
 'use client';
 
 import { useEffect } from 'react';
 import { AnimatePresence } from 'motion/react';
 import * as motion from 'motion/react-client';
-import styles from './Modal.module.scss';
+import styles from './index.module.scss';
 import type { ReactNode } from 'react';
 
 type ModalProps = {

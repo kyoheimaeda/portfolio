@@ -10,7 +10,7 @@ import {
   Mouse,
   MouseConstraint,
 } from 'matter-js';
-import styles from './MatterArea.module.scss';
+import styles from './index.module.scss';
 
 export default function MatterArea() {
   const sceneRef = useRef<HTMLDivElement>(null);

@@ -1,13 +1,12 @@
-// components/ThemeToggle.tsx
 'use client';
 
 import { useAtom } from 'jotai';
 import { ThemeAtom } from '@/atoms/ThemeAtom';
 import { MdContrast } from "react-icons/md";
-import styles from "./ThemeToggle.module.scss";
+import styles from "./index.module.scss";
 
 
-export default function ThemeToggle() {
+export default function ThemeToggleButton() {
   const [theme, setTheme] = useAtom(ThemeAtom);
 
   return (

@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabaseClient';
 import ClientGallery from './components/ClientGallery';
 import { PhotoType } from '@/types/PhotoType';
 
+import styles from "./page.module.scss";
+
 // ISR の設定を false に変更
 // これにより、自動的な時間経過による再検証は行われず、
 // 明示的な revalidatePath('/gallery') が呼び出された時のみ
@@ -21,5 +23,14 @@ export default async function GalleryPage() {
     return <div>写真の読み込み中にエラーが発生しました。</div>;
   }
 
-  return <ClientGallery photos={photos as PhotoType[] || []} />;
+  return (
+    <div className={`l-wrap`}>
+      <section className={styles.section}>
+        <div className={`l-inner`}>
+          <h1 className={`c-title`}><span>G</span>ALLERY</h1>
+          <ClientGallery photos={photos as PhotoType[] || []} />
+        </div>
+      </section>
+    </div>
+  );
 }

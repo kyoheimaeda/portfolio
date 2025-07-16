@@ -1,9 +1,7 @@
 @use 'styles/base' as *;
 
-.navToggle {
-	position: fixed;
-	top: 4rem;
-	right: 4rem;
+.globalNavButton {
+	display: fixed;
 	width: 4rem;
 	height: 4rem;
 	display: grid;
@@ -13,16 +11,6 @@
 	border: none;
 	z-index: 1001;
 	mix-blend-mode: difference;
-
-	@include respond(md) {
-		top: 3rem;
-		right: 3rem;
-	}
-
-	@include respond(sm) {
-		top: 2rem;
-		right: 2rem;
-	}
 	
 	span {
 		width: 100%;
@@ -82,68 +70,6 @@
 				background: var(--color-primary);
 				transform: rotate(90deg);
 			}
-		}
-	}
-}
-
-
-
-.nav {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	background: var(--color-background);
-	z-index: 1000;
-	transform: translateX(100%);
-	@include transition(all, 0.3s, ease);
-
-	&List {
-		list-style: none;
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 1em;
-	}
-
-	&Item {
-		opacity: 0;
-		transform: translateX(50%);
-	}
-
-	&.isOpen {
-		pointer-events: auto;
-		transform: translateX(0);
-
-		.navList {
-			.navItem {
-				opacity: 1;
-				transform: translateX(0);
-
-				@for $i from 1 through 4 {
-					&:nth-child(#{$i}) {
-						transition-duration: .3s;
-						transition-delay: #{(.3 + ( .1 * $i))}s;
-					}
-				}
-			}
-		}
-	}
-
-	a {
-		font-size: 5rem;
-		font-family: var(--font-outfit);
-		font-weight: 600;
-		letter-spacing: .1em;
-
-		&:hover {
-			color: var(--color-primary);
-			@include transition(all, 0.3s, ease);
-			@include glitchColor;
 		}
 	}
 }

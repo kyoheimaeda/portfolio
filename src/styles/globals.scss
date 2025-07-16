@@ -25,12 +25,6 @@ body {
   font-size: 1.4rem;
 }
 
-.inner {
-  width: 90vw;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 * {
   box-sizing: border-box;
   padding: 0;
@@ -42,3 +36,33 @@ a {
   text-decoration: none;
 }
 
+// --------------------------------------------------
+// Layout
+
+.l-wrap {
+  padding: 4rem 0 0;
+}
+
+.l-inner {
+  width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+// --------------------------------------------------
+// Components
+
+.c-title {
+	white-space: nowrap;
+  font-size: 4rem;
+	font-family: var(--font-outfit);
+	font-weight: 800;
+	letter-spacing: .2em;
+	line-height: 1;
+
+  span {
+    display: block;
+    color: var(--color-primary);
+  }
+}

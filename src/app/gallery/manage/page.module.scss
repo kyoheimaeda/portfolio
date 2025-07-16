@@ -13,3 +13,70 @@
 .errorText {
 
 }
+
+.publishContainer {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.publishButton {
+  background-color: #0070f3; /* 例: Next.js のプライマリカラー */
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #005bb5;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+}
+
+.notification {
+}
+
+.publishStatus {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.savePublishContainer {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.savePublishButton {
+  background-color: #0070f3; /* 例: Next.js のプライマリカラー */
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #005bb5;
+  }
+
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+}
+
+.savePublishStatus {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}

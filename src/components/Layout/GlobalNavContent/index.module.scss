@@ -1,0 +1,102 @@
+@use 'styles/base' as *;
+
+.nav {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	background: var(--color-background);
+	// transform: translateX(100%);
+	opacity: 0;
+	@include transition(all, 0.4s, ease-in-out);
+
+	// &::before,
+	// &::after {
+	// 	position: absolute;
+	// 	content: "";
+	// 	top: 0;
+	// 	left: 0;
+	// 	width: 100%;
+	// 	height: 100%;
+	// 	transform: translateX(100%);
+	// 	@include transition(all, 0.8s, ease-in-out);
+	// }
+
+	// &::before {
+	// 	background: var(--color-primary);
+	// 	z-index: -1;
+	// 	transition-delay: .05s;
+	// }
+
+	// &::after {
+	// 	background: var(--color-background);
+	// 	z-index: 0;
+	// }
+
+	&List {
+		position: relative;
+		list-style: none;
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1em;
+		z-index: 1;
+	}
+
+	&Item {
+		opacity: 0;
+		transform: translateX(50%);
+	}
+
+	&.isOpen {
+		pointer-events: auto;
+		// transform: translateX(0);
+		opacity: 1;
+
+		// &::before,
+		// &::after {
+		// 	transform: translateX(0);
+		// 	@include transition(all, 0.8s, ease-in-out);
+		// }
+
+		&::after {
+			transition-delay: .05s;
+		}
+
+		&::after {
+			transition-delay: .1s;
+		}
+
+		.navList {
+			.navItem {
+				opacity: 1;
+				transform: translateX(0);
+
+				@for $i from 1 through 4 {
+					&:nth-child(#{$i}) {
+						transition-duration: .3s;
+						transition-delay: #{(.3 + ( .1 * $i))}s;
+					}
+				}
+			}
+		}
+	}
+
+	a {
+		font-size: 5rem;
+		font-family: var(--font-outfit);
+		font-weight: 600;
+		letter-spacing: .1em;
+
+		&:hover {
+			color: var(--color-primary);
+			@include transition(all, 0.3s, ease);
+			@include glitchColor;
+		}
+	}
+}

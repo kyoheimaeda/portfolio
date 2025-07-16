@@ -3,6 +3,7 @@
 .header {
 	width: 100%;
 	position: fixed;
+	z-index: 1001;
 	top: 4rem;
 	left: 9rem;
 	background: none;
@@ -17,6 +18,22 @@
 		line-height: 4rem;
 		letter-spacing: .05em;
 		@include transition(all, 0.3s, ease);
+	}
+
+	&Actions {
+		position: fixed;
+		top: 4rem;
+		right: 4rem;
+
+		@include respond(md) {
+			top: 3rem;
+			right: 3rem;
+		}
+
+		@include respond(sm) {
+			top: 2rem;
+			right: 2rem;
+		}
 	}
 
 	&.isHome {

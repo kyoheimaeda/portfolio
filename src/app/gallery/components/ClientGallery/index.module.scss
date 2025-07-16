@@ -1,20 +1,5 @@
 @use 'styles/base' as *;
 
-.section {
-	padding: 10rem 0;
-}
-
-.title {
-	font-size: 10vw;
-	white-space: nowrap;
-	font-family: var(--font-outfit);
-	font-weight: 800;
-	letter-spacing: .2em;
-	line-height: 1;
-	position: relative;
-	top: -.15em;
-}
-
 .photoList {
 	padding: 10rem 0;
 	display: grid;

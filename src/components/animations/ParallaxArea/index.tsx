@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import styles from './ParallaxArea.module.scss';
+import styles from './index.module.scss';
 import { SiReact } from '@icons-pack/react-simple-icons';
 
 export default function ParallaxArea() {

@@ -1,4 +1,3 @@
-// components/ThemeProvider/index.tsx
 'use client';
 
 import { useAtomValue } from 'jotai';
