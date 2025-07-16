@@ -3,8 +3,8 @@
 import type { Metadata } from "next";
 import { fontVariables } from '@/lib/fonts'
 import "@/styles//globals.scss";
-import Header from '@/components/layouts/Header';
-import Footer from '@/components/layouts/Footer';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import ThemeProvider from '@/components/ui/ThemeProvider';
 import MouseFollower from '@/components/ui/MouseFollower';
 
