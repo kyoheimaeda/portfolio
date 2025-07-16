@@ -24,6 +24,8 @@
 		position: fixed;
 		top: 4rem;
 		right: 4rem;
+		display: flex;
+		gap: 2rem;
 
 		@include respond(md) {
 			top: 3rem;

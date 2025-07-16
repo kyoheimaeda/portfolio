@@ -40,7 +40,15 @@ a {
 // Layout
 
 .l-wrap {
-  padding: 4rem 0 0;
+  padding: 16rem 0;
+
+  @include respond(md) {
+    padding: 14rem 0;
+  }
+
+  @include respond(sm) {
+    padding: 12rem 0;
+  }
 }
 
 .l-inner {
@@ -49,20 +57,31 @@ a {
   margin-right: auto;
 }
 
+.l-contents {
+  margin: 10rem 0;
+}
+
 
 // --------------------------------------------------
 // Components
 
 .c-title {
 	white-space: nowrap;
-  font-size: 4rem;
+  font-size: 10rem;
 	font-family: var(--font-outfit);
 	font-weight: 800;
 	letter-spacing: .2em;
 	line-height: 1;
 
+  @include respond(md) {
+    font-size: 8rem;
+  }
+  
+  @include respond(sm) {
+    font-size: 6rem;
+  }
+
   span {
-    display: block;
     color: var(--color-primary);
   }
 }

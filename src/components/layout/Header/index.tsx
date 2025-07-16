@@ -20,8 +20,8 @@ export default function Header() {
 		<>
 			<header className={`${styles.header} ${pathname === '/' ? styles.isHome : ''}`}>
 				<div className={styles.headerActions}>
-					<GlobalNavButton onToggle={toggleNav} isOpen={isNavOpen} />
 					<ThemeToggleButton />
+					<GlobalNavButton onToggle={toggleNav} isOpen={isNavOpen} />
 				</div>
 			</header>
 			<GlobalNavContent isOpen={isNavOpen} onClose={toggleNav} />

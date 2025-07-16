@@ -1,8 +1,8 @@
+import { PhotoType } from '@/types/PhotoType';
 import { createClient } from '@/lib/supabaseClient';
 import ClientGallery from './components/ClientGallery';
-import { PhotoType } from '@/types/PhotoType';
-
-import styles from "./page.module.scss";
+import PageWrap from '@/components/layout/PageWrap';
+// import styles from "./page.module.scss";
 
 // ISR の設定を false に変更
 // これにより、自動的な時間経過による再検証は行われず、
@@ -24,13 +24,8 @@ export default async function GalleryPage() {
   }
 
   return (
-    <div className={`l-wrap`}>
-      <section className={styles.section}>
-        <div className={`l-inner`}>
-          <h1 className={`c-title`}><span>G</span>ALLERY</h1>
-          <ClientGallery photos={photos as PhotoType[] || []} />
-        </div>
-      </section>
-    </div>
+    <PageWrap title='GALLERY'>
+      <ClientGallery photos={photos as PhotoType[] || []} />
+    </PageWrap>
   );
 }

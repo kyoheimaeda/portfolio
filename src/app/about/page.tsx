@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import styles from "./page.module.scss";
-
+import PageWrap from '@/components/layout/PageWrap';
 
 export const metadata: Metadata = {
   title: 'About',
@@ -9,11 +9,10 @@ export const metadata: Metadata = {
 
 export default function About() {
   return (
-    <>
-      <section className={styles.section}>
-        <h1 className={styles.title}>About</h1>
+    <PageWrap title="ABOUT">
+      <section className={`${styles.section}`}>
         <p className={styles.text}>This is the about page.</p>
       </section>
-    </>
+    </PageWrap>
   );
 }

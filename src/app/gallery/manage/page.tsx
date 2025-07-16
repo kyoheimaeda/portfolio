@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabaseClient';
 import { PhotoType } from '@/types/PhotoType';
 import PhotoUploader from './components/PhotoUploader';
 import PhotoList from './components/PhotoList';
+import PageWrap from '@/components/layout/PageWrap';
 import styles from './page.module.scss';
 import { revalidateGalleryPage } from './actions';
 // ★ PostgrestError をインポート
@@ -227,38 +228,36 @@ export default function GalleryManagePage() {
   }
 
   return (
-    <section className={styles.section}>
-      <div className="l-inner">
-        {/* 全体通知の表示 */}
-        {globalNotification && (
-          <div className={styles.notification}>
-            <div className={styles.notificationBox}>
-              <p>{globalNotification}</p>
-            </div>
+    <PageWrap title="EDIT">
+      {/* 全体通知の表示 */}
+      {globalNotification && (
+        <div className={styles.notification}>
+          <div className={styles.notificationBox}>
+            <p>{globalNotification}</p>
           </div>
-        )}
-
-        {/* PhotoUploader コンポーネント */}
-        <PhotoUploader onPhotoUploaded={handlePhotoUploaded} />
-
-        {/* 「保存して公開」ボタン */}
-        <SavePublishButton
-          photos={photos}
-          dbPhotosState={dbPhotosState}
-          onSaveAndPublish={handleSaveAndPublish}
-          isProcessing={isProcessingSavePublish}
-          statusMessage={savePublishStatus}
-        />
-
-        {/* PhotoList コンポーネント (並び替えと削除機能を含む) */}
-        <div className={styles.photoList}>
-          {photos.length === 0 ? (
-            <p>No Data</p>
-          ) : (
-            <PhotoList photos={photos} onPhotosReordered={handlePhotosReordered} onPhotoDeleted={handlePhotoDeleted} />
-          )}
         </div>
+      )}
+
+      {/* PhotoUploader コンポーネント */}
+      <PhotoUploader onPhotoUploaded={handlePhotoUploaded} />
+
+      {/* 「保存して公開」ボタン */}
+      <SavePublishButton
+        photos={photos}
+        dbPhotosState={dbPhotosState}
+        onSaveAndPublish={handleSaveAndPublish}
+        isProcessing={isProcessingSavePublish}
+        statusMessage={savePublishStatus}
+      />
+
+      {/* PhotoList コンポーネント (並び替えと削除機能を含む) */}
+      <div className={styles.photoList}>
+        {photos.length === 0 ? (
+          <p>No Data</p>
+        ) : (
+          <PhotoList photos={photos} onPhotosReordered={handlePhotosReordered} onPhotoDeleted={handlePhotoDeleted} />
+        )}
       </div>
-    </section>
+    </PageWrap>
   );
 }
