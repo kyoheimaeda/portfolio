@@ -33,7 +33,7 @@ export default function GalleryManagePage() {
   // 初回ロード時に写真をフェッチ
   useEffect(() => {
     fetchPhotos();
-  }, [fetchPhotos]); // fetchPhotos を依存配列に追加
+  }, [fetchPhotos]);
 
   // PhotoUploaderからアップロード通知を受け取った際のハンドラー
   const handlePhotoUploaded = async (newPhoto: PhotoType) => {
@@ -64,12 +64,12 @@ export default function GalleryManagePage() {
   };
 
   // PhotoListから削除通知を受け取った際のハンドラー (DeletePhotoButton経由)
-  const handlePhotoDeleted = async (deletedId: string) => { // async を追加
+  const handlePhotoDeleted = async (deletedId: string) => {
     // photos ステートから削除された写真をフィルタリングして削除
     setPhotos(prevPhotos => prevPhotos.filter(photo => photo.id !== deletedId));
     // 全体通知を表示
     setGlobalNotification('写真を削除しました！');
-    setTimeout(() => setGlobalNotification(null), 3000); // 3秒後に通知を消す
+    setTimeout(() => setGlobalNotification(null), 3000);
     console.log(`Photo with ID ${deletedId} has been deleted.`);
 
     // ★ ギャラリーページのキャッシュを再検証
@@ -86,7 +86,7 @@ export default function GalleryManagePage() {
     // 新しい順序に基づいて order 値を更新
     const updates = reorderedPhotos.map((p, idx) => ({ id: p.id, order: idx }));
 
-    const { error: updateError } = await supabase.from('photos').upsert(updates, { onConflict: 'id' }); // idが衝突したら更新
+    const { error: updateError } = await supabase.from('photos').upsert(updates, { onConflict: 'id' });
 
     if (updateError) {
       console.error('写真の並び替え保存エラー:', updateError);
@@ -99,7 +99,7 @@ export default function GalleryManagePage() {
 
     // ★ ギャラリーページのキャッシュを再検証
     await revalidateGalleryPage();
-  }, [photos]);
+  }, []);
 
 
   if (loading) {

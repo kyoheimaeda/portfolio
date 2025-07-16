@@ -76,7 +76,7 @@ export function useFollowPointer(ref: RefObject<HTMLDivElement | null>) {
 
     window.addEventListener("pointermove", handlePointerMove)
     return () => window.removeEventListener("pointermove", handlePointerMove)
-  }, [])
+  }, [ref, x, y]) // 'x' と 'y' を依存配列に追加
 
   return { x, y }
 }
