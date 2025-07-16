@@ -5,8 +5,8 @@ import { fontVariables } from '@/lib/fonts'
 import "@/styles//globals.scss";
 import Header from '@/components/layouts/Header';
 import Footer from '@/components/layouts/Footer';
-import ThemeProvider from '@/components/ui/ThemeProvider';
-import MouseFollower from '@/components/ui/MouseFollower';
+import ThemeProvider from '@/components/uissss/ThemeProvider';
+import MouseFollower from '@/components/uissss/MouseFollower';
 
 export const metadata: Metadata = {
   title: {
