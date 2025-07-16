@@ -1,9 +1,9 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import GlobalNavButton from '@/components/Layout/GlobalNavButton';
-import GlobalNavContent from '@/components/Layout/GlobalNavContent';
-import ThemeToggleButton from '@/components/UI/ThemeToggleButton';
+import GlobalNavButton from '@/components/layout/GlobalNavButton';
+import GlobalNavContent from '@/components/layout/GlobalNavContent';
+import ThemeToggleButton from '@/components/ui/ThemeToggleButton';
 import styles from "./index.module.scss";
 import React, { useState } from 'react';
 
