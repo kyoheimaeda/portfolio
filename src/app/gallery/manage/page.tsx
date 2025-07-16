@@ -89,7 +89,7 @@ export default function GalleryManagePage() {
       setGlobalNotification('写真の並び順を保存しました！');
       setTimeout(() => setGlobalNotification(null), 3000);
     }
-  }, []);
+  }, [photos]); // photos を依存配列に追加
 
 
   if (loading) {
