@@ -1,14 +1,12 @@
 'use client';
 
-import { motion, AnimatePresence } from 'motion/react'; // アニメーションが必要なら維持
+import { motion, AnimatePresence } from 'motion/react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
-import styles from './index.module.scss'; // または './PageWrapper.module.scss'
+import styles from './index.module.scss'; // このスタイルファイル名もご確認ください
 
-export default function PageTransition({ children }: { children: React.ReactNode }) { // コンポーネント名は適宜
+export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
-  // 初期レンダリングフラグとオーバーレイ表示状態（アニメーションが必要なら維持）
   const isFirstRender = useRef(true);
   const [showOverlay, setShowOverlay] = useState(false);
 
@@ -18,7 +16,7 @@ export default function PageTransition({ children }: { children: React.ReactNode
       return;
     }
     setShowOverlay(true);
-    const timeout = setTimeout(() => setShowOverlay(false), 1000);
+    const timeout = setTimeout(() => setShowOverlay(false), 1000); // オーバーレイ表示時間
     return () => clearTimeout(timeout);
   }, [pathname]);
 
@@ -26,7 +24,6 @@ export default function PageTransition({ children }: { children: React.ReactNode
     <>
       <AnimatePresence mode="wait">
         {showOverlay && (
-          // オーバーレイのアニメーション部分（もしあれば維持）
           <motion.div key="overlayWrap" className={styles.overlayWrap}>
             <motion.div key="overlay" className={styles.overlay} initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ duration: 0.8, delay: 0, ease: 'circInOut' }} />
             <motion.div key="overlay2" className={styles.overlay2} initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ duration: 0.8, delay: 0.1, ease: 'circInOut' }} />
@@ -36,11 +33,11 @@ export default function PageTransition({ children }: { children: React.ReactNode
         )}
       </AnimatePresence>
 
-      {/* ★ここを <main> から <div> に変更します★ */}
-      <motion.div // <motion.main> だった場合は <motion.div> に変更
+      {/* ここは `main` ではなく `div` に変更するように提案していました */}
+      <motion.div
         key={pathname}
-        className={styles.content} // クラス名はこのまま維持
-        initial={{ opacity: 0 }} // アニメーションプロパティも維持
+        className={styles.content}
+        initial={{ opacity: 0 }}
         animate={{ opacity: showOverlay ? 0 : 1 }}
         transition={{ duration: 0.3, delay: showOverlay ? 0.6 : 0 }}
       >
