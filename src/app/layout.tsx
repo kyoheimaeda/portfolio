@@ -7,7 +7,6 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ThemeProvider from '@/components/ui/ThemeProvider';
 import MouseFollower from '@/components/ui/MouseFollower';
-// import PageMotion from '@/components/PageMotion'; // layout.tsxからは完全に不要なので削除またはコメントアウトを維持
 
 export const metadata: Metadata = {
   title: {
