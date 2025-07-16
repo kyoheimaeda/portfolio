@@ -6,6 +6,7 @@ import { PhotoType } from '@/types/PhotoType';
 import PhotoUploader from './components/PhotoUploader';
 import PhotoList from './components/PhotoList';
 import styles from './page.module.scss';
+import { revalidateGalleryPage } from './actions'; // サーバーアクションをインポート
 
 export default function GalleryManagePage() {
   const [photos, setPhotos] = useState<PhotoType[]>([]);
@@ -57,16 +58,22 @@ export default function GalleryManagePage() {
       setTimeout(() => setGlobalNotification(null), 3000);
       console.log(`New photo uploaded: ${newPhoto.url}`);
     }
+
+    // ★ ギャラリーページのキャッシュを再検証
+    await revalidateGalleryPage();
   };
 
   // PhotoListから削除通知を受け取った際のハンドラー (DeletePhotoButton経由)
-  const handlePhotoDeleted = (deletedId: string) => {
+  const handlePhotoDeleted = async (deletedId: string) => { // async を追加
     // photos ステートから削除された写真をフィルタリングして削除
     setPhotos(prevPhotos => prevPhotos.filter(photo => photo.id !== deletedId));
     // 全体通知を表示
     setGlobalNotification('写真を削除しました！');
     setTimeout(() => setGlobalNotification(null), 3000); // 3秒後に通知を消す
     console.log(`Photo with ID ${deletedId} has been deleted.`);
+
+    // ★ ギャラリーページのキャッシュを再検証
+    await revalidateGalleryPage();
   };
 
   // PhotoListから並び替え通知を受け取った際のハンドラー
@@ -89,7 +96,10 @@ export default function GalleryManagePage() {
       setGlobalNotification('写真の並び順を保存しました！');
       setTimeout(() => setGlobalNotification(null), 3000);
     }
-  }, [photos]); // photos を依存配列に追加
+
+    // ★ ギャラリーページのキャッシュを再検証
+    await revalidateGalleryPage();
+  }, [photos]);
 
 
   if (loading) {
