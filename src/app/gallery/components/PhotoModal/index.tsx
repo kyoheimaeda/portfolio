@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import * as motion from 'motion/react-client'; // motion をインポート
 import { AnimatePresence } from 'motion/react';
 import React from 'react'; // React をインポートして React.CSSProperties を使用
+import Image from 'next/image'; // Image コンポーネントをインポート
 
 // ----------------------------------------
 // Types
@@ -30,13 +31,13 @@ const boxStyle = () => ({
   cursor: 'zoom-out',
 });
 
-// 画像のスタイル
-const imageStyle = (): React.CSSProperties => ({
-  maxWidth: '100%',
-  maxHeight: '100%',
-  objectFit: 'contain',
-  borderRadius: 8,
-});
+// 画像のスタイルは <Image /> の style プロパティで直接指定するため削除
+// const imageStyle = (): React.CSSProperties => ({
+//   maxWidth: '100%',
+//   maxHeight: '100%',
+//   objectFit: 'contain',
+//   borderRadius: 8,
+// });
 
 // ----------------------------------------
 // Component
@@ -88,7 +89,6 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            // onClick={(e) => e.stopPropagation()} // ★ ここから e.stopPropagation() を削除
           >
             {/* 実際の画像ボックスのアニメーションを担当する motion.div */}
             <motion.div
@@ -119,12 +119,17 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
               }}
               transition={{ duration: 0.4, ease: 'easeInOut' }}
               style={boxStyle()} // アニメーション以外のスタイルを適用
-              // onClick={(e) => e.stopPropagation()} // ★ ここから e.stopPropagation() を削除
             >
-              <img
+              {/* <img> タグを <Image /> コンポーネントに置き換え */}
+              <Image
                 src={photoUrl}
                 alt="expanded"
-                style={imageStyle()}
+                fill // 親要素 (motion.div) のサイズを埋める
+                sizes="90vw" // モーダル内の画像はビューポートの最大90%を使用
+                style={{
+                  objectFit: 'contain', // 画像をアスペクト比を維持して親要素に収める
+                  borderRadius: 8, // 元の imageStyle から borderRadius を適用
+                }}
               />
             </motion.div>
           </motion.div>

@@ -5,7 +5,18 @@ const nextConfig: NextConfig = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'src')],
   },
-  // 他の設定があればここに書く
+  images: {
+    domains: ['hpomumncmbuixaiqyniu.supabase.co'],
+    // または remotePatterns を使用する（より柔軟性が高い）
+    // remotePatterns: [
+    //   {
+    //     protocol: 'https',
+    //     hostname: 'hpomumncmbuixaiqyniu.supabase.co',
+    //     port: '',
+    //     pathname: '/storage/v1/object/public/**',
+    //   },
+    // ],
+  },
 };
 
 export default nextConfig;
