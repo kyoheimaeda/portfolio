@@ -1,6 +1,3 @@
-// src/components/PageMotion/index.tsx
-// または src/components/PageWrapper/index.tsx (もしリネームしていた場合)
-
 'use client';
 
 import { motion, AnimatePresence } from 'motion/react'; // アニメーションが必要なら維持
@@ -8,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import styles from './index.module.scss'; // または './PageWrapper.module.scss'
 
-export default function PageMotion({ children }: { children: React.ReactNode }) { // コンポーネント名は適宜
+export default function PageTransition({ children }: { children: React.ReactNode }) { // コンポーネント名は適宜
   const pathname = usePathname();
 
   // 初期レンダリングフラグとオーバーレイ表示状態（アニメーションが必要なら維持）
