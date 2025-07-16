@@ -7,6 +7,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ThemeProvider from '@/components/ui/ThemeProvider';
 import MouseFollower from '@/components/ui/MouseFollower';
+import PageTransition from '@/components/animations/PageTransition';
 
 export const metadata: Metadata = {
   title: {
@@ -22,9 +23,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
       <body>
         <ThemeProvider>
           <Header />
-          <main>
-            {children}
-          </main>
+          {children}
           <Footer />
         </ThemeProvider>
         <MouseFollower />
