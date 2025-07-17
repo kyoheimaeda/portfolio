@@ -24,7 +24,7 @@ import Image from 'next/image'; // Image コンポーネントをインポート
 
 interface SortablePhotoItemProps {
   photo: PhotoType;
-  onPhotoDeleted: (deletedPhotoId: string) => void;
+  onDelete: (deletedPhotoId: string) => Promise<void>; // Promise<void> を追加
 }
 
 
@@ -32,7 +32,7 @@ interface SortablePhotoItemProps {
 // --------------------------------------------------
 // Component
 
-export default function SortablePhotoItem({ photo, onPhotoDeleted }: SortablePhotoItemProps) {
+export default function SortablePhotoItem({ photo, onDelete }: SortablePhotoItemProps) { // プロップス名も変更
   const {
     attributes,
     listeners,
@@ -68,7 +68,7 @@ export default function SortablePhotoItem({ photo, onPhotoDeleted }: SortablePho
         </figure>
       </div>
       <div className={styles.actions}>
-        <DeletePhotoButton photoId={photo.id} onDeleteSuccess={onPhotoDeleted} />
+        <DeletePhotoButton photoId={photo.id} onDelete={onDelete} />
 
         <button
           {...listeners}

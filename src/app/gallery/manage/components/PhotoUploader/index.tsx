@@ -1,5 +1,3 @@
-// src/app/gallery/manage/components/PhotoUploader/index.tsx
-
 'use client';
 
 // ----------------------------------------
@@ -14,20 +12,20 @@ import Image from 'next/image';
 // SCSS モジュールのインポート
 import styles from './index.module.scss';
 
-// ★ browser-image-compression をインポート
+// browser-image-compression をインポート
 import Compressor from 'browser-image-compression';
 
 // ----------------------------------------
 // Types
 
 type PhotoUploaderProps = {
-  onPhotoUploaded: (newPhoto: PhotoType) => void;
+  onUpload: (newPhoto: PhotoType) => void; // プロップス名を onUpload に変更
 };
 
 // ----------------------------------------
 // Component
 
-export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
+export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -46,137 +44,132 @@ export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      // ファイルタイプをチェック
-      if (!selectedFile.type.startsWith('image/')) {
-        setNotification('画像ファイルを選択してください。');
-        setTimeout(() => setNotification(null), 3000);
-        setFile(null);
-        setSelectedFileName(null);
-        if (previewImageUrl) {
-          URL.revokeObjectURL(previewImageUrl);
-        }
-        setPreviewImageUrl(null);
-        return;
-      }
-
       setFile(selectedFile);
-      setNotification(null);
       setSelectedFileName(selectedFile.name);
 
+      // プレビュー画像のURLを生成
       if (previewImageUrl) {
-        URL.revokeObjectURL(previewImageUrl);
+        URL.revokeObjectURL(previewImageUrl); // 古いURLを解放
       }
-      setPreviewImageUrl(URL.createObjectURL(selectedFile));
+      const newPreviewUrl = URL.createObjectURL(selectedFile);
+      setPreviewImageUrl(newPreviewUrl);
+
+      setNotification(null); // ファイルが選択されたら通知をクリア
     } else {
       setFile(null);
       setSelectedFileName(null);
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
+        setPreviewImageUrl(null);
       }
-      setPreviewImageUrl(null);
     }
   };
 
   const handleUpload = async () => {
     if (!file) {
-      setNotification('ファイルを選んでください。');
-      setTimeout(() => setNotification(null), 3000);
+      setNotification('アップロードするファイルを選択してください。');
       return;
     }
 
     setUploading(true);
     setNotification('アップロード中...');
 
-    const supabase = createClient();
-
-    let fileToUpload: File = file; // アップロードするファイルを初期化
-
     try {
-      // ----------------------------------------------------
-      // ★ ここから画像圧縮処理を追加 ★
-      // ----------------------------------------------------
-      console.log('Original file:', file);
-      console.log('Original file size:', (file.size / (1024 * 1024)).toFixed(2), 'MB');
-
-      const compressionOptions = {
-        maxSizeMB: 1,           // 許容する最大ファイルサイズ（MB）。これを超えると圧縮される
-        maxWidthOrHeight: 1920, // 最大幅または最大高。どちらか大きい方がこの値を超える場合にリサイズ
-        useWebWorker: true,     // Web Worker を使用して圧縮をバックグラウンドで行う（パフォーマンス向上）
-        // imageType: 'image/jpeg', // 出力する画像形式を指定 (省略すると元の形式が維持される)
-        // quality: 0.8, // 圧縮品質 (0〜1、jpeg/webpのみ有効)。maxSizeMB と併用すると、maxSizeMB が優先されることが多い
+      // 画像圧縮オプション
+      const options = {
+        maxSizeMB: 1,           // 最大ファイルサイズ (MB)
+        maxWidthOrHeight: 1920, // 最大幅または高さ (px)
+        useWebWorker: true,     // Web Worker を使用してUIのブロックを避ける
       };
 
-      try {
-        const compressedBlob = await Compressor(file, compressionOptions);
-        // compressedBlob は Blob オブジェクトなので、File オブジェクトに変換
-        fileToUpload = new File([compressedBlob], file.name, { type: compressedBlob.type });
+      const compressedFile = await Compressor(file, options);
+      console.log('originalFile instanceof Blob', file instanceof Blob); // true
+      console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+      console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`);
 
-        console.log('Compressed file:', fileToUpload);
-        console.log('Compressed file size:', (fileToUpload.size / (1024 * 1024)).toFixed(2), 'MB');
-      } catch (compressionError) {
-        console.error('画像圧縮エラー:', compressionError);
-        console.warn('画像圧縮に失敗しました。元のファイルでアップロードを試みます。');
-        // 圧縮に失敗しても、元のファイル (fileToUpload はそのまま file の値) でアップロードを試行する
-      }
-      // ----------------------------------------------------
-      // ★ ここまで画像圧縮処理を追加 ★
-      // ----------------------------------------------------
-
+      const supabase = createClient();
 
       // ランダムなファイル名に拡張子を追加し、photosフォルダ内に保存
-      const extension = fileToUpload.name.substring(fileToUpload.name.lastIndexOf('.'));
-      const fileNameInBucket = `photos/${uuidv4()}${extension}`; // バケット内のパス
+      const fileId = uuidv4();
+      const extension = compressedFile.name.substring(compressedFile.name.lastIndexOf('.'));
+      const fileName = `photos/${fileId}${extension}`;
 
-      // Supabase Storage に画像をアップロード
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('images') // ★ ここをあなたのバケット名に合わせてください (例: 'images' または 'photos')
-        .upload(fileNameInBucket, fileToUpload, { // 圧縮されたファイルを使用
+      // Supabase Storage にアップロード
+      // 'data' は使用しないため、デストラクチャリングから省略
+      const { error: uploadError } = await supabase.storage
+        .from('images') // バケット名
+        .upload(fileName, compressedFile, {
           cacheControl: '3600',
-          upsert: false,
+          upsert: false, // 同じファイル名が存在する場合はエラーにする
         });
 
       if (uploadError) {
-        console.error('Supabase Storage アップロードエラー:', uploadError);
-        setNotification(`アップロードに失敗しました: ${uploadError.message}`);
-        setTimeout(() => setNotification(null), 5000);
-        return;
+        throw uploadError;
       }
-
-      console.log('ファイルアップロード成功:', uploadData);
 
       // アップロードされたファイルの公開URLを取得
       const { data: publicUrlData } = supabase.storage
-        .from('images') // ★ ここもあなたのバケット名に合わせてください
-        .getPublicUrl(fileNameInBucket);
+        .from('images')
+        .getPublicUrl(fileName);
 
       if (!publicUrlData || !publicUrlData.publicUrl) {
-        console.error('公開URLの取得に失敗しました:', publicUrlData);
-        setNotification('公開URLの取得に失敗しました。');
-        await supabase.storage.from('images').remove([fileNameInBucket]);
-        setTimeout(() => setNotification(null), 5000);
-        return;
+        throw new Error('公開URLの取得に失敗しました。');
       }
 
-      const photoUrl = publicUrlData.publicUrl;
-      console.log('公開URL:', photoUrl);
-
-      // DBに写真情報を保存
-      const { data: insertedPhoto, error: dbError } = await supabase.from('photos')
-        .insert({ url: photoUrl })
-        .select('*')
-        .single();
+      // 新しい写真データをDBに保存
+      const { data: photoData, error: dbError } = await supabase
+        .from('photos')
+        .insert({
+          id: fileId,
+          url: publicUrlData.publicUrl,
+          order: 9999, // 仮の順序。後で管理ページで並び替える
+        })
+        .select();
 
       if (dbError) {
-        console.error('Supabase DB挿入エラー:', dbError);
-        setNotification(`DBへの保存に失敗しました: ${dbError.message}`);
-        await supabase.storage.from('images').remove([fileNameInBucket]);
-        setTimeout(() => setNotification(null), 5000);
-        return;
+        throw dbError;
       }
 
-      console.log('DB挿入成功:', insertedPhoto);
-      setNotification('アップロード成功！');
-      onPhotoUploaded(insertedPhoto as PhotoType);
+      // アップロード成功通知を親コンポーネントに送る
+      setNotification('アップロードが完了しました！');
+      // 新しい写真データを onUpload プロップスを介して親に渡す
+      onUpload(photoData[0] as PhotoType);
+
+
+    } catch (error: unknown) {
+      debugger; // ここにdebugger; を追加
+
+      console.error('--- アップロードエラー詳細 ---');
+      console.error('エラーオブジェクト全体:', error);
+      console.error('エラーの型:', typeof error);
+      if (error instanceof Error) {
+        console.error('Error インスタンスのメッセージ:', error.message);
+        console.error('Error インスタンスの名前:', error.name);
+        console.error('Error インスタンスのスタックトレース:', error.stack);
+      } else if (typeof error === 'object' && error !== null) {
+        // オブジェクトだがErrorインスタンスではない場合、プロパティをJSON形式で表示
+        try {
+          console.error('エラーオブジェクトのプロパティ:', JSON.stringify(error, null, 2));
+        } catch (e) {
+          console.error('エラーオブジェクトのプロパティをJSON化できませんでした。');
+        }
+      }
+      console.error('----------------------------');
+
+      let errorMessage = 'アップロードに失敗しました';
+      if (error instanceof Error) {
+        errorMessage += `: ${error.message}`;
+      } else if (typeof error === 'string') {
+        errorMessage += `: ${error}`;
+      } else if (typeof error === 'object' && error !== null && 'message' in error && typeof (error as any).message === 'string') {
+        // オブジェクトに 'message' プロパティがある場合
+        errorMessage += `: ${(error as any).message}`;
+      } else {
+        errorMessage += `。不明なエラー。`;
+      }
+      setNotification(errorMessage);
+    } finally {
+      setUploading(false);
       setFile(null);
       setSelectedFileName(null);
       if (previewImageUrl) {
@@ -184,18 +177,6 @@ export default function PhotoUploader({ onPhotoUploaded }: PhotoUploaderProps) {
         setPreviewImageUrl(null);
       }
       setTimeout(() => setNotification(null), 3000);
-
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        console.error('予期せぬエラーが発生しました:', err);
-        setNotification(`予期せぬエラーが発生しました: ${err.message}`);
-      } else {
-        console.error('予期せぬエラーが発生しました:', err);
-        setNotification('予期せぬエラーが発生しました。');
-      }
-      setTimeout(() => setNotification(null), 5000);
-    } finally {
-      setUploading(false);
     }
   };
 

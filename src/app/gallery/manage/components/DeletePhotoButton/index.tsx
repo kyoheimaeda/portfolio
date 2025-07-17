@@ -1,3 +1,5 @@
+// src/app/gallery/manage/components/DeletePhotoButton/index.tsx
+
 'use client';
 
 // ----------------------------------------
@@ -11,7 +13,8 @@ import { createClient } from '@/lib/supabaseClient';
 
 type DeletePhotoButtonProps = {
   photoId: string; // 削除する写真のID
-  onDeleteSuccess: (deletedPhotoId: string) => void; // 削除成功時に親に通知するコールバック
+  // onDeleteSuccess から onDelete に変更
+  onDelete: (deletedPhotoId: string) => Promise<void>; // 削除成功時に親に通知するコールバック
 };
 
 
@@ -25,7 +28,7 @@ import { LuX } from "react-icons/lu";
 // ----------------------------------------
 // Component
 
-export default function DeletePhotoButton({ photoId, onDeleteSuccess }: DeletePhotoButtonProps) {
+export default function DeletePhotoButton({ photoId, onDelete }: DeletePhotoButtonProps) { // プロップス名も変更
   const [notification, setNotification] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -34,6 +37,9 @@ export default function DeletePhotoButton({ photoId, onDeleteSuccess }: DeletePh
     setNotification(null); // 削除試行前に通知をクリア
 
     const supabase = createClient();
+    // Supabase Storage から画像を削除
+    // TODO: ストレージからの削除とDBからの削除を同期させる必要がある
+    // ここではDBからの削除のみ
     const { error } = await supabase.from('photos').delete().eq('id', photoId);
 
     if (error) {
@@ -42,7 +48,7 @@ export default function DeletePhotoButton({ photoId, onDeleteSuccess }: DeletePh
       setTimeout(() => setNotification(null), 3000);
     } else {
       setNotification('写真を削除しました');
-      onDeleteSuccess(photoId); // 削除成功を親に通知
+      onDelete(photoId); // 削除成功を親に通知 (onDeleteSuccess から onDelete に変更)
       setTimeout(() => setNotification(null), 3000);
     }
     setDeleting(false);
