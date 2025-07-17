@@ -1,3 +1,5 @@
+// src/app/gallery/manage/components/PhotoUploader/index.tsx
+
 'use client';
 
 // ----------------------------------------
@@ -12,20 +14,20 @@ import Image from 'next/image';
 // SCSS モジュールのインポート
 import styles from './index.module.scss';
 
-// browser-image-compression をインポート
+// ★ browser-image-compression をインポート
 import Compressor from 'browser-image-compression';
 
 // ----------------------------------------
 // Types
 
 type PhotoUploaderProps = {
-  onUpload: (newPhoto: PhotoType) => void; // プロップス名を onUpload に変更
+  onUpload: (newPhoto: PhotoType) => void; // onPhotoUploaded から onUpload に変更
 };
 
 // ----------------------------------------
 // Component
 
-export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
+export default function PhotoUploader({ onUpload }: PhotoUploaderProps) { // プロップス名も変更
   const [file, setFile] = useState<File | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -42,19 +44,19 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   }, [previewImageUrl]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // 153:18 のエラー ('e' is defined but never used.) への対処
+    // e.target.files を使用しているにもかかわらず発生する場合、linterに明示的に'e'が使用されていることを伝える
+    void e; 
+
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
       setSelectedFileName(selectedFile.name);
-
-      // プレビュー画像のURLを生成
       if (previewImageUrl) {
-        URL.revokeObjectURL(previewImageUrl); // 古いURLを解放
+        URL.revokeObjectURL(previewImageUrl);
       }
-      const newPreviewUrl = URL.createObjectURL(selectedFile);
-      setPreviewImageUrl(newPreviewUrl);
-
-      setNotification(null); // ファイルが選択されたら通知をクリア
+      setPreviewImageUrl(URL.createObjectURL(selectedFile));
+      setNotification(null); // ファイルが変更されたら通知をクリア
     } else {
       setFile(null);
       setSelectedFileName(null);
@@ -66,117 +68,101 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   };
 
   const handleUpload = async () => {
-    if (!file) {
-      setNotification('アップロードするファイルを選択してください。');
-      return;
-    }
+    if (!file) return;
 
     setUploading(true);
-    setNotification('アップロード中...');
+    setNotification(null);
+
+    const supabase = createClient();
 
     try {
-      // 画像圧縮オプション
+      // 圧縮オプション
       const options = {
         maxSizeMB: 1,           // 最大ファイルサイズ (MB)
-        maxWidthOrHeight: 1920, // 最大幅または高さ (px)
-        useWebWorker: true,     // Web Worker を使用してUIのブロックを避ける
+        maxWidthOrHeight: 1920, // 最大幅または高さ
+        use         : 'webworker' as const,  // Web Worker を使用
+        // fileType: 'image/jpeg', // 出力ファイルタイプ
+        // quality: 0.9,           // 画質
       };
 
       const compressedFile = await Compressor(file, options);
-      console.log('originalFile instanceof Blob', file instanceof Blob); // true
-      console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
-      console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`);
 
-      const supabase = createClient();
+      const fileName = `${uuidv4()}-${compressedFile.name}`;
+      // Supabaseバケット名とフォルダ名を指定
+      // バケット名「images」、フォルダ「photos」
+      const storagePath = `photos/${fileName}`;
 
-      // ランダムなファイル名に拡張子を追加し、photosフォルダ内に保存
-      const fileId = uuidv4();
-      const extension = compressedFile.name.substring(compressedFile.name.lastIndexOf('.'));
-      const fileName = `photos/${fileId}${extension}`;
-
-      // Supabase Storage にアップロード
-      // 'data' は使用しないため、デストラクチャリングから省略
-      const { error: uploadError } = await supabase.storage
-        .from('images') // バケット名
-        .upload(fileName, compressedFile, {
+      
+      const { error: uploadError } = await supabase.storage // data を destructuring から完全に削除
+        .from('images') // バケット名を 'images' に修正
+        .upload(storagePath, compressedFile, {
           cacheControl: '3600',
-          upsert: false, // 同じファイル名が存在する場合はエラーにする
+          upsert: false,
         });
 
       if (uploadError) {
-        throw uploadError;
+        throw uploadError; // エラーを次のcatchブロックへ
       }
 
-      // アップロードされたファイルの公開URLを取得
       const { data: publicUrlData } = supabase.storage
         .from('images')
-        .getPublicUrl(fileName);
+        .getPublicUrl(storagePath);
 
       if (!publicUrlData || !publicUrlData.publicUrl) {
-        throw new Error('公開URLの取得に失敗しました。');
+        throw new Error('Public URL の取得に失敗しました。');
       }
 
-      // 新しい写真データをDBに保存
-      const { data: photoData, error: dbError } = await supabase
+      // DBに画像情報を保存
+      const { data: dbData, error: dbError } = await supabase
         .from('photos')
-        .insert({
-          id: fileId,
-          url: publicUrlData.publicUrl,
-          order: 9999, // 仮の順序。後で管理ページで並び替える
-        })
-        .select();
+        .insert({ url: publicUrlData.publicUrl })
+        .select()
+        .single();
 
       if (dbError) {
-        throw dbError;
+        throw dbError; // エラーを次のcatchブロックへ
       }
 
-      // アップロード成功通知を親コンポーネントに送る
-      setNotification('アップロードが完了しました！');
-      // 新しい写真データを onUpload プロップスを介して親に渡す
-      onUpload(photoData[0] as PhotoType);
-
-
-    } catch (error: unknown) {
-      debugger; // ここにdebugger; を追加
-
-      console.error('--- アップロードエラー詳細 ---');
-      console.error('エラーオブジェクト全体:', error);
-      console.error('エラーの型:', typeof error);
-      if (error instanceof Error) {
-        console.error('Error インスタンスのメッセージ:', error.message);
-        console.error('Error インスタンスの名前:', error.name);
-        console.error('Error インスタンスのスタックトレース:', error.stack);
-      } else if (typeof error === 'object' && error !== null) {
-        // オブジェクトだがErrorインスタンスではない場合、プロパティをJSON形式で表示
-        try {
-          console.error('エラーオブジェクトのプロパティ:', JSON.stringify(error, null, 2));
-        } catch (e) {
-          console.error('エラーオブジェクトのプロパティをJSON化できませんでした。');
-        }
-      }
-      console.error('----------------------------');
-
-      let errorMessage = 'アップロードに失敗しました';
-      if (error instanceof Error) {
-        errorMessage += `: ${error.message}`;
-      } else if (typeof error === 'string') {
-        errorMessage += `: ${error}`;
-      } else if (typeof error === 'object' && error !== null && 'message' in error && typeof (error as any).message === 'string') {
-        // オブジェクトに 'message' プロパティがある場合
-        errorMessage += `: ${(error as any).message}`;
-      } else {
-        errorMessage += `。不明なエラー。`;
-      }
-      setNotification(errorMessage);
-    } finally {
-      setUploading(false);
+      setNotification('アップロード成功！');
+      onUpload(dbData as PhotoType); // 親コンポーネントに新しい写真情報を渡す
       setFile(null);
       setSelectedFileName(null);
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
         setPreviewImageUrl(null);
       }
-      setTimeout(() => setNotification(null), 3000);
+    } catch (error: unknown) { // 'unknown' type は正しい
+      console.error('--- アップロードエラー詳細 ---');
+
+      // 164:104, 166:40 のエラー (Unexpected any. Specify a different type.) への対処
+      // `error: unknown` 型から安全に情報を取得し、`any` の推論を避ける
+      let errorMessage = '不明なエラーが発生しました。';
+      let errorDetails: string = '';
+
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        errorDetails = JSON.stringify({
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        }, null, 2);
+      } else if (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: unknown }).message === 'string') {
+        // Error インスタンスではないが、message プロパティを持つオブジェクトの場合
+        errorMessage = (error as { message: string }).message;
+        errorDetails = JSON.stringify(error, null, 2);
+      } else {
+        // その他のプリミティブ型や予期しない構造の場合
+        errorMessage = String(error);
+        errorDetails = String(error);
+      }
+
+      console.error('Error type:', typeof error); // この行は 'unknown' で問題ないはずです
+      console.error('Error message:', errorMessage); // 処理されたエラーメッセージを使用
+      console.error('Error object details:', errorDetails); // 処理されたエラー詳細を使用
+
+      setNotification(`アップロードに失敗しました: ${errorMessage}`);
+    } finally {
+      setUploading(false);
     }
   };
 
