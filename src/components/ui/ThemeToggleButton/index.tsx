@@ -1,7 +1,7 @@
 'use client';
 
 import { useAtom } from 'jotai';
-import { ThemeAtom } from '@/atoms/ThemeAtom';
+import { ThemeAtom } from '@/state/atoms/ThemeAtom';
 import { MdContrast } from "react-icons/md";
 import styles from "./index.module.scss";
 

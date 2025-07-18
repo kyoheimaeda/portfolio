@@ -2,7 +2,7 @@
 
 import { useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
-import { ThemeAtom } from '@/atoms/ThemeAtom';
+import { ThemeAtom } from '@/state/atoms/ThemeAtom';
 
 const colors = ['#41B883', '#83CD29', '#F0DB4F', '#2589CA', '#A259FF', '#CB6699', '#F16529'];
 

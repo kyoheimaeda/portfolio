@@ -1,4 +1,4 @@
-import { PhotoType } from '@/types/PhotoType';
+import { PhotoType } from '@/features/gallery/types/PhotoType';
 import { createClient } from '@/lib/supabaseClient';
 import ClientGallery from './components/ClientGallery';
 import PageWrap from '@/components/layout/PageWrap';

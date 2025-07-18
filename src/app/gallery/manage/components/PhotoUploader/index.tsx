@@ -1,20 +1,14 @@
-// src/app/gallery/manage/components/PhotoUploader/index.tsx
-
 'use client';
 
 // ----------------------------------------
 // Imports
 
 import { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { PhotoType } from '@/types/PhotoType';
-import Image from 'next/image'; // next/image をインポート
-
-// SCSS モジュールのインポート
-import styles from './index.module.scss';
-
-// browser-image-compression をインポート
+import { PhotoType } from '@/features/gallery/types/PhotoType';
+import Image from 'next/image';
 import Compressor from 'browser-image-compression';
+import { uploadPhotoAction } from '@/features/gallery/actions';
+import styles from './index.module.scss';
 
 // ----------------------------------------
 // Types
@@ -33,7 +27,6 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
-  // プレビューURLのクリーンアップ
   useEffect(() => {
     return () => {
       if (previewImageUrl) {
@@ -48,9 +41,8 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
       setFile(selectedFile);
       setSelectedFileName(selectedFile.name);
 
-      // プレビュー表示のためのURLを生成
       if (previewImageUrl) {
-        URL.revokeObjectURL(previewImageUrl); // 既存のURLを解放
+        URL.revokeObjectURL(previewImageUrl);
       }
       setPreviewImageUrl(URL.createObjectURL(selectedFile));
     } else {
@@ -61,7 +53,7 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
         setPreviewImageUrl(null);
       }
     }
-    setNotification(null); // ファイル変更時に通知をクリア
+    setNotification(null);
   };
 
   const handleUpload = async () => {
@@ -74,39 +66,25 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
     setNotification('画像をアップロード中...');
 
     try {
-      // 画像圧縮オプション
       const options = {
-        maxSizeMB: 1,           // 最大ファイルサイズ（MB）
-        maxWidthOrHeight: 1920, // 最大幅または高さ（ピクセル）
-        useWebWorker: true,    // WebWorker を使用して高速化
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
       };
 
       const compressedFile = await Compressor(file, options);
 
-      const fileName = `${uuidv4()}-${file.name.replace(/\s/g, '_')}`; // ファイル名にUUIDを付与し、スペースをアンダースコアに置換
-      const filePath = `images/gallery/${fileName}`; // R2 に保存するパス
-
       const formData = new FormData();
-      formData.append('file', compressedFile); // 圧縮後のファイルをFormDataに追加
-      formData.append('filePath', filePath); // R2に保存するパス
-      formData.append('original_file_name', file.name); // 元のファイル名
-      formData.append('compressed_size_kb', (compressedFile.size / 1024).toFixed(2)); // 圧縮後のサイズ
+      formData.append('file', compressedFile);
+      formData.append('original_file_name', file.name);
 
-      // APIルートにアップロードリクエストを送信
-      const response = await fetch('/api/upload-image', {
-        method: 'POST',
-        body: formData,
-      });
+      const result = await uploadPhotoAction(formData);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'アップロードに失敗しました。');
+      if (!result.success || !result.newPhoto) {
+        throw new Error(result.error || 'アップロードに失敗しました。');
       }
 
-      const result = await response.json();
-      const newPhoto: PhotoType = result.newPhoto; // APIからPhotoTypeとして返されると仮定
-
-      onUpload(newPhoto); // 親コンポーネントにアップロード成功を通知
+      onUpload(result.newPhoto);
 
       setNotification('画像が正常にアップロードされました！');
       setFile(null);
@@ -117,18 +95,9 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
       }
 
     } catch (error: unknown) {
-      console.error('画像のアップロード中にエラーが発生しました:', error);
-      let errorMessage = '不明なエラー';
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === 'object' && error !== null && 'message' in error) {
-        if (typeof (error as { message: unknown }).message === 'string') {
-          errorMessage = (error as { message: string }).message;
-        }
-      } else {
-        errorMessage = String(error); // Errorインスタンスでもオブジェクトでもない場合は文字列化
-      }
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
       setNotification(`画像のアップロード中にエラーが発生しました: ${errorMessage}`);
+      console.error('Upload error:', error);
     } finally {
       setUploading(false);
       setTimeout(() => setNotification(null), 5000);

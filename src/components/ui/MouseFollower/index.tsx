@@ -67,7 +67,9 @@ export function useFollowPointer(ref: RefObject<HTMLDivElement | null>) {
     if (!ref.current) return
 
     const handlePointerMove = ({ clientX, clientY }: MouseEvent) => {
-      const element = ref.current!
+      const element = ref.current
+      if (!element) return // null チェックを追加
+
       frame.read(() => {
         x.set(clientX - element.offsetLeft - element.offsetWidth / 2)
         y.set(clientY - element.offsetTop - element.offsetHeight / 2)
@@ -76,7 +78,7 @@ export function useFollowPointer(ref: RefObject<HTMLDivElement | null>) {
 
     window.addEventListener("pointermove", handlePointerMove)
     return () => window.removeEventListener("pointermove", handlePointerMove)
-  }, [ref, x, y]) // 'x' と 'y' を依存配列に追加
+  }, [ref, x, y])
 
   return { x, y }
 }

@@ -5,7 +5,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { PhotoType } from '@/types/PhotoType';
+import { PhotoType } from '@/features/gallery/types/PhotoType';
 
 // SCSS モジュールのインポート
 import styles from "./index.module.scss";
