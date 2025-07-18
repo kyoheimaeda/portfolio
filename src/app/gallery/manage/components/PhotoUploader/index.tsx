@@ -6,28 +6,28 @@
 // Imports
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabaseClient';
-import { PhotoType } from '@/types/PhotoType';
+// import { createClient } from '@/lib/supabaseClient'; // この行は既に削除済みのはずです
 import { v4 as uuidv4 } from 'uuid';
-import Image from 'next/image';
+import { PhotoType } from '@/types/PhotoType';
+import Image from 'next/image'; // next/image をインポート
 
 // SCSS モジュールのインポート
 import styles from './index.module.scss';
 
-// ★ browser-image-compression をインポート
+// browser-image-compression をインポート
 import Compressor from 'browser-image-compression';
 
 // ----------------------------------------
 // Types
 
 type PhotoUploaderProps = {
-  onUpload: (newPhoto: PhotoType) => void; // onPhotoUploaded から onUpload に変更
+  onUpload: (newPhoto: PhotoType) => void;
 };
 
 // ----------------------------------------
 // Component
 
-export default function PhotoUploader({ onUpload }: PhotoUploaderProps) { // プロップス名も変更
+export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -44,19 +44,16 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) { // プ
   }, [previewImageUrl]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // 153:18 のエラー ('e' is defined but never used.) への対処
-    // e.target.files を使用しているにもかかわらず発生する場合、linterに明示的に'e'が使用されていることを伝える
-    void e; 
-
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
       setSelectedFileName(selectedFile.name);
+
+      // プレビュー表示のためのURLを生成
       if (previewImageUrl) {
-        URL.revokeObjectURL(previewImageUrl);
+        URL.revokeObjectURL(previewImageUrl); // 既存のURLを解放
       }
       setPreviewImageUrl(URL.createObjectURL(selectedFile));
-      setNotification(null); // ファイルが変更されたら通知をクリア
     } else {
       setFile(null);
       setSelectedFileName(null);
@@ -65,104 +62,87 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) { // プ
         setPreviewImageUrl(null);
       }
     }
+    setNotification(null); // ファイル変更時に通知をクリア
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      setNotification('ファイルが選択されていません。');
+      return;
+    }
 
     setUploading(true);
-    setNotification(null);
-
-    const supabase = createClient();
+    setNotification('画像をアップロード中...');
 
     try {
-      // 圧縮オプション
+      // 以前私がここにデバッグ用のconsole.logを挿入しましたが、
+      // クライアントサイドからはサーバーサイドの環境変数は見えないため、
+      // 誤解を招くので、このブロックは完全に削除します。
+      // APIルート（src/app/api/upload-image/route.ts）内で確認してください。
+
+      // R2関連の環境変数の確認
+      // このチェックはAPIルートで行われるべきです。
+      // クライアントサイドでは、Next.jsが自動的にNEXT_PUBLIC_が付かない変数を隠蔽します。
+      // ここでの明示的なチェックは不要です。
+
+      // 画像圧縮オプション
       const options = {
-        maxSizeMB: 1,           // 最大ファイルサイズ (MB)
-        maxWidthOrHeight: 1920, // 最大幅または高さ
-        use         : 'webworker' as const,  // Web Worker を使用
-        // fileType: 'image/jpeg', // 出力ファイルタイプ
-        // quality: 0.9,           // 画質
+        maxSizeMB: 1,           // 最大ファイルサイズ（MB）
+        maxWidthOrHeight: 1920, // 最大幅または高さ（ピクセル）
+        useWebWorker: true,    // WebWorker を使用して高速化
       };
 
       const compressedFile = await Compressor(file, options);
 
-      const fileName = `${uuidv4()}-${compressedFile.name}`;
-      // Supabaseバケット名とフォルダ名を指定
-      // バケット名「images」、フォルダ「photos」
-      const storagePath = `photos/${fileName}`;
+      const fileName = `${uuidv4()}-${file.name.replace(/\s/g, '_')}`; // ファイル名にUUIDを付与し、スペースをアンダースコアに置換
+      const filePath = `images/gallery/${fileName}`; // R2 に保存するパス
 
-      
-      const { error: uploadError } = await supabase.storage // data を destructuring から完全に削除
-        .from('images') // バケット名を 'images' に修正
-        .upload(storagePath, compressedFile, {
-          cacheControl: '3600',
-          upsert: false,
-        });
+      const formData = new FormData();
+      formData.append('file', compressedFile); // 圧縮後のファイルをFormDataに追加
+      formData.append('filePath', filePath); // R2に保存するパス
+      formData.append('original_file_name', file.name); // 元のファイル名
+      formData.append('compressed_size_kb', (compressedFile.size / 1024).toFixed(2)); // 圧縮後のサイズ
 
-      if (uploadError) {
-        throw uploadError; // エラーを次のcatchブロックへ
+      // APIルートにアップロードリクエストを送信
+      const response = await fetch('/api/upload-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'アップロードに失敗しました。');
       }
 
-      const { data: publicUrlData } = supabase.storage
-        .from('images')
-        .getPublicUrl(storagePath);
+      const result = await response.json();
+      const newPhoto: PhotoType = result.newPhoto; // APIからPhotoTypeとして返されると仮定
 
-      if (!publicUrlData || !publicUrlData.publicUrl) {
-        throw new Error('Public URL の取得に失敗しました。');
-      }
+      onUpload(newPhoto); // 親コンポーネントにアップロード成功を通知
 
-      // DBに画像情報を保存
-      const { data: dbData, error: dbError } = await supabase
-        .from('photos')
-        .insert({ url: publicUrlData.publicUrl })
-        .select()
-        .single();
-
-      if (dbError) {
-        throw dbError; // エラーを次のcatchブロックへ
-      }
-
-      setNotification('アップロード成功！');
-      onUpload(dbData as PhotoType); // 親コンポーネントに新しい写真情報を渡す
+      setNotification('画像が正常にアップロードされました！');
       setFile(null);
       setSelectedFileName(null);
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
         setPreviewImageUrl(null);
       }
-    } catch (error: unknown) { // 'unknown' type は正しい
-      console.error('--- アップロードエラー詳細 ---');
 
-      // 164:104, 166:40 のエラー (Unexpected any. Specify a different type.) への対処
-      // `error: unknown` 型から安全に情報を取得し、`any` の推論を避ける
-      let errorMessage = '不明なエラーが発生しました。';
-      let errorDetails: string = '';
-
+    } catch (error: unknown) {
+      console.error('画像のアップロード中にエラーが発生しました:', error);
+      let errorMessage = '不明なエラー';
       if (error instanceof Error) {
         errorMessage = error.message;
-        errorDetails = JSON.stringify({
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        }, null, 2);
-      } else if (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: unknown }).message === 'string') {
-        // Error インスタンスではないが、message プロパティを持つオブジェクトの場合
-        errorMessage = (error as { message: string }).message;
-        errorDetails = JSON.stringify(error, null, 2);
+      } else if (typeof error === 'object' && error !== null && 'message' in error) {
+        if (typeof (error as { message: unknown }).message === 'string') {
+          errorMessage = (error as { message: string }).message;
+        }
       } else {
-        // その他のプリミティブ型や予期しない構造の場合
-        errorMessage = String(error);
-        errorDetails = String(error);
+        errorMessage = String(error); // Errorインスタンスでもオブジェクトでもない場合は文字列化
       }
-
-      console.error('Error type:', typeof error); // この行は 'unknown' で問題ないはずです
-      console.error('Error message:', errorMessage); // 処理されたエラーメッセージを使用
-      console.error('Error object details:', errorDetails); // 処理されたエラー詳細を使用
-
-      setNotification(`アップロードに失敗しました: ${errorMessage}`);
+      setNotification(`画像のアップロード中にエラーが発生しました: ${errorMessage}`);
     } finally {
       setUploading(false);
+      setTimeout(() => setNotification(null), 5000);
     }
   };
 
