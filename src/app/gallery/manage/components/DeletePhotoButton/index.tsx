@@ -27,8 +27,6 @@ export default function DeletePhotoButton({ photo, onDelete }: DeletePhotoButton
   // const supabase = createClient(); // ★ DB操作はAPIルートで行うため削除
 
   const handleDelete = async () => {
-    console.log('DeletePhotoButton: photo prop received:', photo); 
-    
     if (!confirm(`「${photo.original_file_name}」を本当に削除しますか？`)) {
       return;
     }

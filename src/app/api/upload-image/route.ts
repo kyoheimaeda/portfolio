@@ -29,16 +29,6 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  console.log('--- API Route /api/upload-image/ POST Request ---');
-  console.log('CLOUDFLARE_ACCOUNT_ID:', CLOUDFLARE_ACCOUNT_ID ? 'Set' : 'Not Set');
-  console.log('R2_ACCESS_KEY_ID:', R2_ACCESS_KEY_ID ? 'Set' : 'Not Set');
-  console.log('R2_SECRET_ACCESS_KEY:', R2_SECRET_ACCESS_KEY ? 'Set' : 'Not Set');
-  console.log('R2_BUCKET_NAME:', R2_BUCKET_NAME ? R2_BUCKET_NAME : 'Not Set');
-  console.log('R2_ENDPOINT_URL:', R2_ENDPOINT_URL); // 修正後のURLを確認
-  console.log('NEXT_PUBLIC_R2_PUBLIC_DOMAIN:', process.env.NEXT_PUBLIC_R2_PUBLIC_DOMAIN ? 'Set' : 'Not Set');
-  console.log('NEXT_PUBLIC_SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not Set');
-  console.log('NEXT_PUBLIC_SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not Set');
-
   // 環境変数が設定されているか確認
   if (!CLOUDFLARE_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY || !R2_BUCKET_NAME) {
     const missingVars = [];
@@ -56,20 +46,8 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
-
-    console.log('--- File and FormData Debugging ---');
-    console.log('Is file object received?', !!file);
-    console.log('File name from file object (file.name):', file ? file.name : 'N/A (file is null)');
     const originalFileNameFromForm = formData.get('original_file_name');
-    console.log('original_file_name from formData.get():', originalFileNameFromForm);
-    console.log('Type of original_file_name from formData.get():', typeof originalFileNameFromForm);
-
     const originalFileName = (originalFileNameFromForm as string || file?.name || '');
-
-    console.log('Determined originalFileName:', originalFileName);
-    console.log('Type of determined originalFileName:', typeof originalFileName);
-    console.log('--- End File and FormData Debugging ---');
-
 
     if (!file) {
       return NextResponse.json({ message: 'No file uploaded.' }, { status: 400 });

@@ -6,7 +6,6 @@
 // Imports
 
 import { useState, useEffect } from 'react';
-// import { createClient } from '@/lib/supabaseClient'; // この行は既に削除済みのはずです
 import { v4 as uuidv4 } from 'uuid';
 import { PhotoType } from '@/types/PhotoType';
 import Image from 'next/image'; // next/image をインポート
@@ -75,16 +74,6 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
     setNotification('画像をアップロード中...');
 
     try {
-      // 以前私がここにデバッグ用のconsole.logを挿入しましたが、
-      // クライアントサイドからはサーバーサイドの環境変数は見えないため、
-      // 誤解を招くので、このブロックは完全に削除します。
-      // APIルート（src/app/api/upload-image/route.ts）内で確認してください。
-
-      // R2関連の環境変数の確認
-      // このチェックはAPIルートで行われるべきです。
-      // クライアントサイドでは、Next.jsが自動的にNEXT_PUBLIC_が付かない変数を隠蔽します。
-      // ここでの明示的なチェックは不要です。
-
       // 画像圧縮オプション
       const options = {
         maxSizeMB: 1,           // 最大ファイルサイズ（MB）
