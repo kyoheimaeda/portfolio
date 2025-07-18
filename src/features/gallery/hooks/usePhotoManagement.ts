@@ -68,7 +68,7 @@ export const usePhotoManagement = () => {
       const errorMessage = err instanceof Error ? err.message : '写真の削除に失敗しました。';
       setError(errorMessage);
     }
-  }, [setPhotos]);
+  }, []);
 
   useEffect(() => {
     fetchPhotos();

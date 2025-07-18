@@ -28,7 +28,7 @@ export default function ManageGalleryPage() {
     if (!loading && photos.length > 0 && dbPhotosState.length === 0) {
       setDbPhotosState(photos);
     }
-  }, [loading, photos, dbPhotosState.length]);
+  }, [loading, photos, dbPhotosState]);
 
   const handlePhotoUploaded = useCallback((newPhoto: PhotoType) => {
     const updatedPhotos = [...photos, newPhoto].sort((a, b) => a.order - b.order);
