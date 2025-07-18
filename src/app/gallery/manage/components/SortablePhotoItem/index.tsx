@@ -4,9 +4,8 @@
 
 // --------------------------------------------------
 
-import React from 'react';
-import { PhotoType } from '@/types/PhotoType';
-import DeletePhotoButton from '../DeletePhotoButton'; // ここは変更なし
+import React, { useState } from 'react';
+import { PhotoType } from '@/features/gallery/types/PhotoType';
 
 // dnd-kit のインポート
 import { useSortable } from '@dnd-kit/sortable';
@@ -25,7 +24,7 @@ import Image from 'next/image';
 
 interface SortablePhotoItemProps {
   photo: PhotoType;
-  onDelete: (deletedPhotoId: string) => Promise<void>;
+  onDelete: (photo: PhotoType) => Promise<void>;
 }
 
 
@@ -33,14 +32,23 @@ interface SortablePhotoItemProps {
 // Component
 
 export default function SortablePhotoItem({ photo, onDelete }: SortablePhotoItemProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging
-  } = useSortable({ id: photo.id, disabled: false });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: photo.id });
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleDeleteClick = async () => {
+    if (!confirm(`「${photo.original_file_name}」を本当に削除しますか？`)) {
+      return;
+    }
+    setIsDeleting(true);
+    try {
+      await onDelete(photo);
+    } catch (error) {
+      // エラーは親コンポーネントで処理される想定
+      console.error("Deletion failed in SortablePhotoItem:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   const itemStyle = {
     transform: CSS.Transform.toString(transform),
@@ -67,8 +75,9 @@ export default function SortablePhotoItem({ photo, onDelete }: SortablePhotoItem
         </figure>
       </div>
       <div className={styles.actions}>
-        {/* ★ここを修正しました★ photoId={photo.id} を photo={photo} に変更 */}
-        <DeletePhotoButton photo={photo} onDelete={onDelete} />
+        <button onClick={handleDeleteClick} disabled={isDeleting} className={styles.deleteButton}>
+          {isDeleting ? '削除中...' : '削除'}
+        </button>
 
         <button
           {...listeners}

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import PhotoModal from '../PhotoModal';
 import PhotoItem from '../PhotoItem'; // PhotoItem をインポートするように変更
 import styles from "./index.module.scss";
-import { PhotoType } from '@/types/PhotoType';
+import { PhotoType } from '@/features/gallery/types/PhotoType';
 
 export default function ClientGallery({
   photos
@@ -14,6 +14,14 @@ export default function ClientGallery({
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState<string | null>(null);
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
   const originRef = useRef<HTMLElement>(null);
+
+  // 画像プリロード処理
+  useEffect(() => {
+    photos.forEach((photo) => {
+      const img = new Image();
+      img.src = photo.url;
+    });
+  }, [photos]);
 
   const openPhotoModal = (
     url: string,
