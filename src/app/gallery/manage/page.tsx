@@ -36,8 +36,6 @@ export default function ManageGalleryPage() {
     setDbPhotosState(updatedPhotos);
     setGlobalNotification('写真がアップロードされ、公開ページに反映されました！');
     setTimeout(() => setGlobalNotification(null), 3000);
-    // console.log('handlePhotoUploaded: photos state after upload:', photos);
-    // console.log('handlePhotoUploaded: dbPhotosState after upload:', dbPhotosState);
   }, [photos, setPhotos]);
 
   const handlePhotoDeleted = useCallback(async (photo: PhotoType) => {

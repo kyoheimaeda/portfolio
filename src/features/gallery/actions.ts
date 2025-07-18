@@ -83,10 +83,8 @@ export async function uploadPhotoAction(formData: FormData) {
 
 
 export async function updatePhotoOrderAction(updates: PhotoType[]) {
-  console.log('updatePhotoOrderAction: Received updates:', JSON.stringify(updates, null, 2));
   try {
     if (!Array.isArray(updates) || updates.length === 0) {
-      console.error('updatePhotoOrderAction: No updates provided or invalid format.');
       throw new Error('No updates provided or invalid format.');
     }
 
@@ -95,17 +93,14 @@ export async function updatePhotoOrderAction(updates: PhotoType[]) {
       .upsert(updates, { onConflict: 'id' });
 
     if (dbError) {
-      console.error('updatePhotoOrderAction: Supabase upsert error:', dbError);
       throw new Error(`Database error: ${dbError.message}`);
     }
 
     revalidatePath('/gallery');
-    console.log('updatePhotoOrderAction: Upsert successful and revalidated path.');
     return { success: true };
 
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-    console.error('updatePhotoOrderAction: Error:', errorMessage);
     return { success: false, error: errorMessage };
   }
 }
