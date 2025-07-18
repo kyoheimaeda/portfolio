@@ -9,7 +9,6 @@ console.log('Value:', r2PublicDomain);
 console.log('Type:', typeof r2PublicDomain);
 console.log('--- End Debug ---');
 
-// 環境変数が存在しない場合はビルドを停止させる（より明確なエラーのため）
 if (!r2PublicDomain) {
   throw new Error('Build Error: NEXT_PUBLIC_R2_PUBLIC_DOMAIN environment variable is missing or empty.');
 }
