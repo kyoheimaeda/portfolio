@@ -1,3 +1,4 @@
+// next.config.js
 import path from 'path';
 import type { NextConfig } from "next";
 
@@ -6,16 +7,14 @@ const nextConfig: NextConfig = {
     includePaths: [path.join(__dirname, 'src')],
   },
   images: {
-    domains: ['hpomumncmbuixaiqyniu.supabase.co'],
-    // または remotePatterns を使用する（より柔軟性が高い）
-    // remotePatterns: [
-    //   {
-    //     protocol: 'https',
-    //     hostname: 'hpomumncmbuixaiqyniu.supabase.co',
-    //     port: '',
-    //     pathname: '/storage/v1/object/public/**',
-    //   },
-    // ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: new URL(process.env.NEXT_PUBLIC_R2_PUBLIC_DOMAIN!).hostname,
+        port: '',
+        pathname: '/images/**',
+      },
+    ],
   },
 };
 

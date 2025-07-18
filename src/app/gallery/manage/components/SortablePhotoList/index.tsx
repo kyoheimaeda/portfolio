@@ -1,8 +1,10 @@
+// src/app/gallery/manage/components/SortablePhotoList/index.tsx
+
 'use client';
 
 // --------------------------------------------------
 
-import React, { useState, useEffect } from 'react';
+import React from 'react'; // useState と useEffect を削除
 
 // dnd-kit
 import {
@@ -26,31 +28,24 @@ import SortablePhotoItem from '../SortablePhotoItem';
 import styles from './index.module.scss';
 
 
-
 // --------------------------------------------------
 // Types
 
 import { PhotoType } from '@/types/PhotoType';
 
-type PhotoListProps = {
+type SortablePhotoListProps = {
   photos: PhotoType[]; // 表示・並び替え対象の写真リスト
-  onPhotosReordered: (reorderedPhotos: PhotoType[]) => void; // 並び替え後に親に通知するコールバック
-  onPhotoDeleted: (deletedPhotoId: string) => void; // 削除成功時に親に通知するコールバック
+  onReorder: (reorderedPhotos: PhotoType[]) => Promise<void>; // 並び替え後に親に通知するコールバック
+  onDelete: (deletedPhotoId: string) => Promise<void>; // 削除成功時に親に通知するコールバック
 };
 
 
 
 // --------------------------------------------------
-// PhotoList Component
+// SortablePhotoList Component
 
-export default function PhotoList({ photos, onPhotosReordered, onPhotoDeleted }: PhotoListProps) {
-  // 内部で並び替え可能な写真リストの状態を管理
-  const [currentPhotos, setCurrentPhotos] = useState<PhotoType[]>(photos);
-
-  // 親から渡される photos prop が変更された場合に内部状態を同期
-  useEffect(() => {
-    setCurrentPhotos(photos);
-  }, [photos]);
+export default function SortablePhotoList({ photos, onReorder, onDelete }: SortablePhotoListProps) {
+  // 内部状態 currentPhotos は使用しないので、useState/useEffect は不要
 
   // dnd-kit のセンサー設定
   const sensors = useSensors(
@@ -65,18 +60,19 @@ export default function PhotoList({ photos, onPhotosReordered, onPhotoDeleted }:
     const { active, over } = event;
 
     if (active.id !== over?.id) {
-      const oldIndex = currentPhotos.findIndex(photo => photo.id === active.id);
-      const newIndex = currentPhotos.findIndex(photo => photo.id === over?.id);
+      // 現在の photos 配列内でインデックスを探す
+      const oldIndex = photos.findIndex(photo => photo.id === active.id);
+      const newIndex = photos.findIndex(photo => photo.id === over?.id);
 
       if (oldIndex !== -1 && newIndex !== -1) {
-        const newOrderedPhotos = arrayMove(currentPhotos, oldIndex, newIndex);
-        setCurrentPhotos(newOrderedPhotos); // 内部状態を更新
-        onPhotosReordered(newOrderedPhotos); // 親に新しい順序を通知
+        // photos のコピーに対して arrayMove を適用し、新しい順序の配列を生成
+        const newOrderedPhotos = arrayMove([...photos], oldIndex, newIndex);
+        onReorder(newOrderedPhotos); // 親に新しい順序を通知
       }
     }
   };
 
-  if (currentPhotos.length === 0) {
+  if (photos.length === 0) {
     return <p className={styles.description}>表示する写真がありません。</p>;
   }
 
@@ -88,14 +84,14 @@ export default function PhotoList({ photos, onPhotosReordered, onPhotoDeleted }:
 				onDragEnd={handleDragEnd}
 			>
 				<SortableContext
-					items={currentPhotos.map(photo => photo.id)} // SortableContext にはアイテムのIDの配列を渡す
+					items={photos.map(photo => photo.id)} // props の photos からIDの配列を渡す
 					strategy={verticalListSortingStrategy}
 				>
-					{currentPhotos.map((photo) => (
+					{photos.map((photo) => (
 						<SortablePhotoItem
 							key={photo.id}
 							photo={photo}
-							onPhotoDeleted={onPhotoDeleted} // 削除ハンドラーを渡す
+							onDelete={onDelete}
 						/>
 					))}
 				</SortableContext>

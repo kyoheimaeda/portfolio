@@ -2,59 +2,54 @@
 
 import { useState, useRef } from 'react';
 import PhotoModal from '../PhotoModal';
+import PhotoItem from '../PhotoItem'; // PhotoItem をインポートするように変更
 import styles from "./index.module.scss";
 import { PhotoType } from '@/types/PhotoType';
-import Image from 'next/image';
 
 export default function ClientGallery({
   photos
 }: {
-  photos: PhotoType[] 
+  photos: PhotoType[]
 }) {
-  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [selectedPhotoUrl, setSelectedPhotoUrl] = useState<string | null>(null);
+  const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
   const originRef = useRef<HTMLElement>(null);
-  
+
   const openPhotoModal = (
     url: string,
+    id: string,
     e: React.MouseEvent<HTMLElement>
   ) => {
     const target = e.currentTarget.querySelector('img') as HTMLElement;
     if (!target) return;
 
     originRef.current = target;
-    setSelectedPhoto(url);
+    setSelectedPhotoUrl(url);
+    setSelectedPhotoId(id);
   };
 
   const closePhotoModal = () => {
-    setSelectedPhoto(null);
+    setSelectedPhotoUrl(null);
+    setSelectedPhotoId(null);
   };
 
   return (
     <>
       <ul className={styles.photoList}>
         {photos.map((photo) => (
-          <li key={photo.id} onClick={(e) => openPhotoModal(photo.url, e)}>
-            <a className={styles.link}> {/* a タグにスタイルクラスを追加して position: absolute; を適用 */}
-              {/* <img> タグを <Image /> コンポーネントに置き換え */}
-              <Image
-                src={photo.url}
-                alt={'image'}
-                fill // 親要素 (a タグ) のサイズを埋める
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // レスポンシブな画像サイズを定義
-                style={{
-                  objectFit: 'contain', // 画像をアスペクト比を維持して親要素に収める
-                  objectPosition: 'center', // 画像を中央に配置
-                }}
-              />
-            </a>
-          </li>
+          <PhotoItem // PhotoItem を使用
+            key={photo.id}
+            photo={photo}
+            onClick={(e) => openPhotoModal(photo.url, photo.id, e)}
+          />
         ))}
       </ul>
 
-      {selectedPhoto && originRef.current && (
+      {selectedPhotoUrl && originRef.current && (
         <PhotoModal
-          photoUrl={selectedPhoto}
-          isOpen={!!selectedPhoto}
+          photoUrl={selectedPhotoUrl}
+          photoId={selectedPhotoId}
+          isOpen={!!selectedPhotoUrl}
           onClose={closePhotoModal}
           originRef={originRef}
         />

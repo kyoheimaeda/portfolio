@@ -13,7 +13,7 @@ export const revalidate = false; // または 0;
 export default async function GalleryPage() {
   const supabase = createClient();
   const { data: photos, error } = await supabase
-    .from('photos')
+    .from('gallery_images')
     .select('*')
     .order('order', { ascending: true })
     .order('created_at', { ascending: false });

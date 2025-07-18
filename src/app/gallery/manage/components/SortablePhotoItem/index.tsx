@@ -1,10 +1,12 @@
+// src/app/gallery/manage/components/SortablePhotoItem/index.tsx
+
 'use client';
 
 // --------------------------------------------------
 
 import React from 'react';
 import { PhotoType } from '@/types/PhotoType';
-import DeletePhotoButton from '../DeletePhotoButton';
+import DeletePhotoButton from '../DeletePhotoButton'; // ここは変更なし
 
 // dnd-kit のインポート
 import { useSortable } from '@dnd-kit/sortable';
@@ -15,24 +17,22 @@ import { LuGrip } from "react-icons/lu";
 
 // SCSS モジュールのインポート
 import styles from './index.module.scss';
-import Image from 'next/image'; // Image コンポーネントをインポート
+import Image from 'next/image';
 
 
 // --------------------------------------------------
 // Types
 
-
 interface SortablePhotoItemProps {
   photo: PhotoType;
-  onPhotoDeleted: (deletedPhotoId: string) => void;
+  onDelete: (deletedPhotoId: string) => Promise<void>;
 }
-
 
 
 // --------------------------------------------------
 // Component
 
-export default function SortablePhotoItem({ photo, onPhotoDeleted }: SortablePhotoItemProps) {
+export default function SortablePhotoItem({ photo, onDelete }: SortablePhotoItemProps) {
   const {
     attributes,
     listeners,
@@ -53,22 +53,22 @@ export default function SortablePhotoItem({ photo, onPhotoDeleted }: SortablePho
       style={itemStyle}
       className={`${styles.photoItem} ${isDragging ? styles.isDragging : ''}`}
     >
-      <div className={styles.imageBox}> {/* 親要素に position: relative; が必要 */}
+      <div className={styles.imageBox}>
         <figure>
-          {/* <img> タグを <Image /> コンポーネントに置き換え */}
           <Image
             src={photo.url}
             alt={`Photo ${photo.id}`}
-            fill // 親要素 (figure または imageBox) のサイズを埋める
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw" // ギャラリーのレイアウトに合わせて調整
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
             style={{
-              objectFit: 'cover', // または 'contain'。親要素に画像をどのようにフィットさせるか
+              objectFit: 'cover',
             }}
           />
         </figure>
       </div>
       <div className={styles.actions}>
-        <DeletePhotoButton photoId={photo.id} onDeleteSuccess={onPhotoDeleted} />
+        {/* ★ここを修正しました★ photoId={photo.id} を photo={photo} に変更 */}
+        <DeletePhotoButton photo={photo} onDelete={onDelete} />
 
         <button
           {...listeners}

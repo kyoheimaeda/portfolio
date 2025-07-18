@@ -1,19 +1,23 @@
+// src/app/gallery/components/PhotoModal/index.tsx
+
 'use client';
 
 // ----------------------------------------
 // Imports
 
 import { useEffect, useState } from 'react';
-import * as motion from 'motion/react-client'; // motion をインポート
+import * as motion from 'motion/react-client';
 import { AnimatePresence } from 'motion/react';
-import React from 'react'; // React をインポートして React.CSSProperties を使用
-import Image from 'next/image'; // Image コンポーネントをインポート
+import React from 'react';
+import Image from 'next/image';
+// import styles from "./index.module.scss";
 
 // ----------------------------------------
 // Types
 
 type Props = {
   photoUrl: string;
+  photoId: string | null; // photoId を追加
   originRef: React.RefObject<HTMLElement | null>;
   isOpen: boolean;
   onClose: () => void;
@@ -22,7 +26,6 @@ type Props = {
 // ----------------------------------------
 // Styles (関数定義を維持しつつ、役割を明確化)
 
-// モーダルボックスのスタイル
 const boxStyle = () => ({
   display: 'flex',
   justifyContent: 'center',
@@ -31,18 +34,10 @@ const boxStyle = () => ({
   cursor: 'zoom-out',
 });
 
-// 画像のスタイルは <Image /> の style プロパティで直接指定するため削除
-// const imageStyle = (): React.CSSProperties => ({
-//   maxWidth: '100%',
-//   maxHeight: '100%',
-//   objectFit: 'contain',
-//   borderRadius: 8,
-// });
-
 // ----------------------------------------
 // Component
 
-export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Props) {
+export default function PhotoModal({ photoUrl, photoId, originRef, isOpen, onClose }: Props) { // photoId を受け取る
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -62,13 +57,11 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
   return (
     <AnimatePresence
       onExitComplete={() => {
-        // exitアニメーションが完了したら完全に閉じる
         setOriginRect(null);
         onClose();
       }}
     >
       {visible && (
-        // 外側の通常の div でオーバーレイの静的なレイアウトと背景色を管理
         <div
           style={{
             position: 'fixed',
@@ -76,28 +69,26 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
             left: 0,
             width: '100vw',
             height: '100vh',
-            background: 'rgba(0,0,0,0.9)', // 背景色
-            zIndex: 1000, // z-index
+            background: 'rgba(0,0,0,0.9)',
+            zIndex: 1000,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
           }}
-          onClick={handleClose} // オーバーレイのクリックで閉じる
+          onClick={handleClose}
         >
-          {/* opacityのアニメーションを担当する motion.div */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {/* 実際の画像ボックスのアニメーションを担当する motion.div */}
             <motion.div
               initial={{
                 width: originRect.width,
                 height: originRect.height,
                 top: originRect.top,
                 left: originRect.left,
-                position: 'fixed', // このpositionはアニメーションの一部なのでmotion.divに残す
+                position: 'fixed',
                 x: 0,
                 y: 0,
               }}
@@ -118,17 +109,16 @@ export default function PhotoModal({ photoUrl, originRef, isOpen, onClose }: Pro
                 y: 0,
               }}
               transition={{ duration: 0.4, ease: 'easeInOut' }}
-              style={boxStyle()} // アニメーション以外のスタイルを適用
+              style={boxStyle()}
             >
-              {/* <img> タグを <Image /> コンポーネントに置き換え */}
               <Image
                 src={photoUrl}
-                alt="expanded"
-                fill // 親要素 (motion.div) のサイズを埋める
-                sizes="90vw" // モーダル内の画像はビューポートの最大90%を使用
+                alt={photoId ? `Expanded photo: ${photoId}` : 'Expanded photo'} // photoId を alt テキストに利用
+                fill
+                sizes="90vw"
                 style={{
-                  objectFit: 'contain', // 画像をアスペクト比を維持して親要素に収める
-                  borderRadius: 8, // 元の imageStyle から borderRadius を適用
+                  objectFit: 'contain',
+                  borderRadius: 8,
                 }}
               />
             </motion.div>

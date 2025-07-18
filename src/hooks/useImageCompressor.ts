@@ -30,9 +30,6 @@ export const useImageCompressor = () => {
       useWebWorker: true,     // Web Worker を使用するかどうか
     }
   ): Promise<File> => {
-    console.log('Original file:', imageFile);
-    console.log('Original file size:', (imageFile.size / (1024 * 1024)).toFixed(2), 'MB');
-
     try {
       // browser-image-compression を使用して画像を圧縮
       const compressedBlob = await Compressor(imageFile, options);
@@ -42,9 +39,7 @@ export const useImageCompressor = () => {
         type: compressedBlob.type,
         lastModified: Date.now(), // 最終更新日時を現在に設定
       });
-
-      console.log('Compressed file:', compressedFile);
-      console.log('Compressed file size:', (compressedFile.size / (1024 * 1024)).toFixed(2), 'MB');
+      
       return compressedFile;
 
     } catch (error) {
