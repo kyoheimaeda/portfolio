@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { PhotoType } from '@/features/gallery/types/PhotoType';
-import PhotoUploader from './components/PhotoUploader';
-import SortablePhotoList from './components/SortablePhotoList';
 import PageWrap from '@/components/layout/PageWrap';
 import styles from './page.module.scss';
 import { usePhotoManagement } from '@/features/gallery/hooks/usePhotoManagement';
+
+// 新しく作成したタブコンテンツコンポーネントをインポート
+import UploadTabContent from './components/UploadTabContent';
+import ManageTabContent from './components/ManageTabContent';
 
 export default function ManageGalleryPage() {
   const { photos, setPhotos, loading, error, updatePhotoOrder, deletePhoto } = usePhotoManagement();
@@ -15,6 +17,13 @@ export default function ManageGalleryPage() {
   const [globalNotification, setGlobalNotification] = useState<string | null>(null);
   const [isProcessingSavePublish, setIsProcessingSavePublish] = useState(false);
   const [savePublishStatus, setSavePublishStatus] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'upload' | 'manage'>('upload'); // アクティブなタブの状態
+
+  // 通知表示ヘルパー関数
+  const showNotification = useCallback((message: string, duration = 3000) => {
+    setGlobalNotification(message);
+    setTimeout(() => setGlobalNotification(null), duration);
+  }, []);
 
   const hasPendingReorderChanges = useCallback(() => {
     if (photos.length !== dbPhotosState.length) return false;
@@ -34,33 +43,28 @@ export default function ManageGalleryPage() {
     const updatedPhotos = [...photos, newPhoto].sort((a, b) => a.order - b.order);
     setPhotos(updatedPhotos);
     setDbPhotosState(updatedPhotos);
-    setGlobalNotification('写真がアップロードされ、公開ページに反映されました！');
-    setTimeout(() => setGlobalNotification(null), 3000);
-  }, [photos, setPhotos]);
+    showNotification('写真がアップロードされ、公開ページに反映されました！');
+  }, [photos, setPhotos, showNotification]);
 
   const handlePhotoDeleted = useCallback(async (photo: PhotoType) => {
     try {
       await deletePhoto(photo);
-      setGlobalNotification('写真が削除されました。');
+      showNotification('写真が削除されました。');
       setDbPhotosState(prev => prev.filter(p => p.id !== photo.id));
     } catch (err) {
       console.error('削除処理エラー:', err);
-      setGlobalNotification('写真の削除に失敗しました。');
-    } finally {
-      setTimeout(() => setGlobalNotification(null), 3000);
+      showNotification('写真の削除に失敗しました。');
     }
-  }, [deletePhoto, setDbPhotosState]);
+  }, [deletePhoto, setDbPhotosState, showNotification]);
 
   const handlePhotosReordered = useCallback((reorderedPhotos: PhotoType[]) => {
-    // 並び替えられた写真のorderプロパティを新しいインデックスに更新
     const updatedPhotosWithOrder = reorderedPhotos.map((photo, index) => ({
       ...photo,
-      order: index, // 0から始まるインデックスをorderとして設定
+      order: index,
     }));
     setPhotos(updatedPhotosWithOrder);
-    setGlobalNotification('並び順が変更されました。公開するには「並び順を保存して公開」ボタンを押してください。');
-    setTimeout(() => setGlobalNotification(null), 5000);
-  }, [setPhotos]);
+    showNotification('並び順が変更されました。公開するには「並び順を保存して公開」ボタンを押してください。', 5000);
+  }, [setPhotos, showNotification]);
 
   const handleSaveAndPublish = useCallback(async () => {
     setIsProcessingSavePublish(true);
@@ -84,7 +88,7 @@ export default function ManageGalleryPage() {
   if (error) return <p className={styles.errorText}>エラー: {error}</p>;
 
   return (
-    <PageWrap title="EDIT">
+    <PageWrap>
       {globalNotification && (
         <div className={styles.notification}>
           <div className={styles.notificationBox}>
@@ -93,33 +97,34 @@ export default function ManageGalleryPage() {
         </div>
       )}
 
-      <PhotoUploader onUpload={handlePhotoUploaded} />
-
-      <div className={styles.savePublishContainer}>
-        {savePublishStatus && (
-          <div className={styles.statusMessage}>
-            <p>{savePublishStatus}</p>
-          </div>
-        )}
-        {hasPendingReorderChanges() && !isProcessingSavePublish && (
-          <button
-            onClick={handleSaveAndPublish}
-            disabled={isProcessingSavePublish}
-            className={styles.saveButton}
-          >
-            {isProcessingSavePublish ? '処理中...' : '並び順を保存して公開'}
-          </button>
-        )}
+      <div className={styles.tabs}>
+        <button
+          className={`${styles.tabButton} ${activeTab === 'upload' ? styles.active : ''}`}
+          onClick={() => setActiveTab('upload')}
+        >
+          新規追加
+        </button>
+        <button
+          className={`${styles.tabButton} ${activeTab === 'manage' ? styles.active : ''}`}
+          onClick={() => setActiveTab('manage')}
+        >
+          画像管理
+        </button>
       </div>
 
-      <div className={styles.photoList}>
-        {photos.length === 0 ? (
-          <p>No Data</p>
-        ) : (
-          <SortablePhotoList
+      <div className={styles.tabContent}>
+        {activeTab === 'upload' && (
+          <UploadTabContent onPhotoUploaded={handlePhotoUploaded} />
+        )}
+        {activeTab === 'manage' && (
+          <ManageTabContent
             photos={photos}
             onReorder={handlePhotosReordered}
             onDelete={handlePhotoDeleted}
+            onSaveAndPublish={handleSaveAndPublish}
+            isProcessingSavePublish={isProcessingSavePublish}
+            savePublishStatus={savePublishStatus}
+            hasPendingReorderChanges={hasPendingReorderChanges}
           />
         )}
       </div>

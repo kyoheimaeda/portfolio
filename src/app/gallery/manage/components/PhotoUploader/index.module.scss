@@ -1,13 +1,131 @@
+@use 'styles/base' as *;
+
 .section {
-	max-width: 800px;
 	margin: auto;
 }
 
-.previewArea {
-}
+.uploadArea {
+	position: relative;
+	width: 100%;
+	display: grid;
+	gap: 4rem;
+	grid-template-columns: 1fr;
 
-.imagePreview {
-	img {
-		width: 100%;
+	@include respond(md) {
+		gap: 3rem;
+	}
+	@include respond(sm) {
+		gap: 2rem;
 	}
 }
+
+.input {
+	position: relative;
+
+	&File {
+		position: relative;
+		width: 100%;
+		border: .2rem dotted #ccc;
+		z-index: 1;
+		border-radius: 1rem;
+
+		> input {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			appearance: none;
+			margin: 0;
+			padding: 0;
+			border-radius: 4rem;
+			opacity: 0;
+			line-height: inherit;
+			z-index: 2;
+		}
+	}
+
+	&Text {
+		padding: 4rem 0;
+		// transform: translate(-50%, -50%);
+		z-index: 1;
+		display: flex;
+		flex-flow: column;
+		gap: 2rem;
+		align-items: center;
+
+		svg {
+			width: 4rem;
+			height: 4rem;
+		}
+
+		p {
+			font-size: 1.4rem;
+			white-space: nowrap;
+		}
+	}
+
+	&Button {
+		font-size: 1.4rem;
+		padding: 1em 2em;
+		background: var(--color-text);
+		color: var(--color-background);
+		letter-spacing: .1em;
+		z-index: 2;
+	}
+}
+
+
+.preview {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4rem;
+
+	@include respond(md) {
+		flex-flow: column;
+	}
+
+	&Image {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 2rem;
+		
+		figure {
+			position: relative;
+			width: 20rem;
+			height: 20rem;
+
+			img {
+				object-fit: contain;
+			}
+		}
+	}
+
+	&Info {
+		display: flex;
+		flex-flow: column;
+		justify-content: center;
+		gap: .5em;
+		font-size: 1.2rem;
+		overflow-wrap: anywhere;
+		dt {
+			font-weight: 600;
+		}
+	}
+}
+
+
+.uploadButton {
+	font-size: 1.4rem;
+	letter-spacing: .1em;
+	padding: 1em 2em;
+	margin-left: 2rem;
+	background: var(--color-text);
+	color: var(--color-background);
+}
+
+

@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'motion/react';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
-import styles from './index.module.scss'; // このスタイルファイル名もご確認ください
+import styles from './index.module.scss';
 
 export default function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -33,7 +33,6 @@ export default function PageTransition({ children }: { children: React.ReactNode
         )}
       </AnimatePresence>
 
-      {/* ここは `main` ではなく `div` に変更するように提案していました */}
       <motion.div
         key={pathname}
         className={styles.content}

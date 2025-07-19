@@ -10,7 +10,7 @@ export default function PageWrap({ title, children }: PageWrapProps) {
     <div className={`l-wrap`}>
       <div className={`l-inner`}>
         {title && (
-          <h1 className={`c-title`}>
+          <h1 className={`l-title`}>
             {title}
           </h1>
         )}
