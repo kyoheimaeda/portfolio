@@ -17,7 +17,7 @@ export default function MouseFollower() {
     if (typeof window !== "undefined") {
       setIsMobile(window.matchMedia("(max-width: 768px)").matches);
 
-      const interactiveTags = ["a", "button", "input"] // リンク判定に追加したいタグ一覧
+      const interactiveTags = ["a", "button", "input", "summary"] // リンク判定に追加したいタグ一覧
 
       const handlePointerMove = (e: PointerEvent) => {
         const target = e.target as HTMLElement | null

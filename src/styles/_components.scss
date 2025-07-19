@@ -5,12 +5,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
   background-color: var(--color-text);
   color: var(--color-background);
   border: none;
   padding: 1em 2em;
   cursor: pointer;
   font-size: 1.4rem;
+  font-family: var(--font-outfit) var(--font-noto-sans-jp);
   letter-spacing: .1em;
   transition: background-color 0.2s ease;
 
@@ -21,7 +23,7 @@
   }
 
   &:hover {
-    filter: brightness(1.1);
+    background: var(--color-primary);
   }
 
   &:disabled {

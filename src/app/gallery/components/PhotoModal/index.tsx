@@ -40,11 +40,13 @@ const boxStyle = () => ({
 export default function PhotoModal({ photoUrl, photoId, originRef, isOpen, onClose }: Props) { // photoId を受け取る
   const [originRect, setOriginRect] = useState<DOMRect | null>(null);
   const [visible, setVisible] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false); // New state for image loading
 
   useEffect(() => {
     if (isOpen && originRef.current) {
       setOriginRect(originRef.current.getBoundingClientRect());
       setVisible(true);
+      setIsImageLoaded(false); // Reset image loaded state when modal opens
     }
   }, [isOpen, originRef]);
 
@@ -92,14 +94,14 @@ export default function PhotoModal({ photoUrl, photoId, originRef, isOpen, onClo
                 x: 0,
                 y: 0,
               }}
-              animate={{
+              animate={isImageLoaded ? { // Animate only when image is loaded
                 width: window.innerWidth * 0.9,
                 height: window.innerHeight * 0.9,
                 top: window.innerHeight / 2,
                 left: window.innerWidth / 2,
                 x: -(window.innerWidth * 0.9) / 2,
                 y: -(window.innerHeight * 0.9) / 2,
-              }}
+              } : {}} // Keep initial state if not loaded
               exit={{
                 width: originRect.width,
                 height: originRect.height,
@@ -113,13 +115,14 @@ export default function PhotoModal({ photoUrl, photoId, originRef, isOpen, onClo
             >
               <Image
                 src={photoUrl}
-                alt={photoId ? `Expanded photo: ${photoId}` : 'Expanded photo'} // photoId を alt テキストに利用
+                alt={photoId ? `Expanded photo: ${photoId}` : 'Expanded photo'}
                 fill
                 sizes="90vw"
                 style={{
                   objectFit: 'contain',
                   borderRadius: 8,
                 }}
+                onLoad={() => setIsImageLoaded(true)} // Set state when image loads
               />
             </motion.div>
           </motion.div>

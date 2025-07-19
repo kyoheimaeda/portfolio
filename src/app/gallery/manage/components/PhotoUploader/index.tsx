@@ -10,7 +10,7 @@ import Compressor from 'browser-image-compression';
 import { uploadPhotoAction } from '@/features/gallery/actions';
 import { LuImageUp } from "react-icons/lu";
 import styles from './index.module.scss';
-import Dialog from '@/components/ui/Dialog'; // Dialog をインポート
+import Dialog from '@/components/ui/Dialog';
 import { motion, AnimatePresence } from 'motion/react';
 
 // ----------------------------------------
@@ -25,12 +25,13 @@ type PhotoUploaderProps = {
 
 export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   const [file, setFile] = useState<File | null>(null);
-  const [notification, setNotification] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
-  const [fileSize, setFileSize] = useState<number | null>(null); // ファイルサイズを追加
+  const [fileSize, setFileSize] = useState<number | null>(null);
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
-  const [showConfirmModal, setShowConfirmModal] = useState(false); // 確認モーダルの表示状態
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // エラーメッセージ用ステート
+  const [showErrorDialog, setShowErrorDialog] = useState(false); // エラーダイアログ表示用ステート
 
   useEffect(() => {
     return () => {
@@ -45,7 +46,7 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
       setSelectedFileName(selectedFile.name);
-      setFileSize(selectedFile.size); // ファイルサイズを設定
+      setFileSize(selectedFile.size);
 
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
@@ -54,13 +55,12 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
     } else {
       setFile(null);
       setSelectedFileName(null);
-      setFileSize(null); // ファイルサイズをクリア
+      setFileSize(null);
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
         setPreviewImageUrl(null);
       }
     }
-    setNotification(null);
   };
 
   const formatBytes = (bytes: number, decimals = 2) => {
@@ -72,34 +72,37 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   };
 
-  // 確認モーダルを表示するハンドラ
   const handleConfirmUploadClick = () => {
     if (file) {
       setShowConfirmModal(true);
     } else {
-      setNotification('ファイルが選択されていません。');
+      setErrorMessage('ファイルが選択されていません。');
+      setShowErrorDialog(true);
     }
   };
 
-  // モーダル内の「アップロード」ボタンが押された時のハンドラ
   const handleModalUploadConfirm = async () => {
-    setShowConfirmModal(false); // モーダルを閉じる
-    await handleUpload(); // 実際のアップロード処理を実行
+    setShowConfirmModal(false);
+    await handleUpload();
   };
 
-  // モーダル内の「キャンセル」ボタンが押された時のハンドラ
   const handleModalCancel = () => {
     setShowConfirmModal(false);
   };
 
+  const handleErrorDialogClose = () => {
+    setErrorMessage(null);
+    setShowErrorDialog(false);
+  };
+
   const handleUpload = async () => {
     if (!file) {
-      setNotification('ファイルが選択されていません。');
+      setErrorMessage('ファイルが選択されていません。');
+      setShowErrorDialog(true);
       return;
     }
 
     setUploading(true);
-    setNotification('画像をアップロード中...');
 
     try {
       const options = {
@@ -122,37 +125,27 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
 
       onUpload(result.newPhoto);
 
-      setNotification('画像が正常にアップロードされました！');
       setFile(null);
       setSelectedFileName(null);
-      setFileSize(null); // アップロード後もクリア
+      setFileSize(null);
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
         setPreviewImageUrl(null);
       }
 
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-      setNotification(`画像のアップロード中にエラーが発生しました: ${errorMessage}`);
+      const msg = error instanceof Error ? error.message : '不明なエラーが発生しました。';
+      setErrorMessage(`画像のアップロード中にエラーが発生しました: ${msg}`);
+      setShowErrorDialog(true);
       console.error('Upload error:', error);
     } finally {
       setUploading(false);
-      setTimeout(() => setNotification(null), 5000);
     }
   };
-
-  const isErrorNotification = notification && (notification.includes('失敗') || notification.includes('エラー'));
-  const notificationClass = isErrorNotification ? styles.notificationError : styles.notificationSuccess;
 
   return (
     <section className={styles.section}>
       <div className={styles.inputArea}>
-        {notification && (
-          <p className={`${styles.notification} ${notificationClass}`}>
-            {notification}
-          </p>
-        )}
-        
         <div className={styles.uploadArea}>
           <div className={styles.input}>
             <div className={styles.inputFile}>
@@ -241,6 +234,15 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
         confirmText="アップロード"
         cancelText="キャンセル"
         isProcessing={uploading}
+      />
+
+      {/* エラー表示用ダイアログ */}
+      <Dialog
+        isOpen={showErrorDialog}
+        onClose={handleErrorDialogClose}
+        title="エラー"
+        message={errorMessage}
+        confirmText="閉じる"
       />
     </section>
   );
