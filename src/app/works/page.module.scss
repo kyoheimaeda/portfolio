@@ -1,11 +1,17 @@
 .works {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 4rem;
 
 	&Item {
 		display: grid;
 		grid-template-columns: 1fr;
 		gap: 1em;
 
-		border-bottom: 1px solid var(--color-gray-100);
+		&:not(:first-child) {
+			padding-top: 4rem;
+			border-top: 1px solid var(--color-gray-100);
+		}
 	}
 
 	&Head {
