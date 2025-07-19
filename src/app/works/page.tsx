@@ -55,7 +55,7 @@ export default function WorksPage() {
 									<dd>
 										<ul>
 											<li>Next.js のサーバーコンポーネントで Supabase からデータをフェッチ。</li>
-											<li>Incremental Static Regeneration (ISR) を利用し、`revalidate = false` を設定。明示的な `revalidatePath('/gallery')` 呼び出し時のみキャッシュが再検証され、ページが再生成される。</li>
+											<li>Incremental Static Regeneration (ISR) を利用し、revalidate = false を設定。明示的な revalidatePath 呼び出し時のみキャッシュが再検証され、ページが再生成される。</li>
 										</ul>
 									</dd>
 								</dl>
