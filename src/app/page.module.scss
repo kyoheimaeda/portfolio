@@ -1,10 +1,9 @@
 @use 'styles/base' as *;
-@use 'styles/fonts';
 
 .fv {
 	position: relative;
 	width: 100vw;
-	height: 100svh;
+	height: calc(100svh - 5rem);
 	display: flex;
 	flex-flow: column;
 	justify-content: flex-end;
@@ -27,7 +26,7 @@
 }
 
 .fvTitle {
-	font-size: 7vw;
+	font-size: 8vw;
 	line-height: 1.5em;
 	letter-spacing: .3em;
 	font-weight: 800;
@@ -60,7 +59,7 @@
 }
 
 .fvText {
-	font-size: 2vw;
+	font-size: 2.3vw;
 	font-weight: 900;
 	letter-spacing: .38em;
 	margin-left: -.4em;
