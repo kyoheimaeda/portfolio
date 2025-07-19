@@ -1,0 +1,99 @@
+.works {
+
+	&Item {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1em;
+
+		border-bottom: 1px solid var(--color-gray-100);
+	}
+
+	&Head {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 4rem;
+
+		.linkBox {
+			display: flex;
+			gap: 2rem;
+		}
+	}
+
+	&Body {
+		display: flex;
+		flex-flow: column;
+		align-items: flex-start;
+		justify-content: flex-start;
+		gap: 4rem;
+
+		summary {
+			font-family: var(--font-outfit);
+			font-size: 2rem;
+			cursor: pointer;
+		}
+
+		&Contents {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 4rem;
+
+			h3 {
+				font-size: 2.4rem;
+				padding-bottom: .5em;
+				border-bottom: 1px solid var(--color-gray-100);
+			}
+		}
+	}
+
+	h2 {
+		font-size: 4rem;
+	}
+
+	section {
+		display: grid;
+		grid-template-columns: 1fr;
+
+
+		> dl {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 1em;
+
+			> dt {
+				margin-top: 1em;
+				font-size: 1.6rem;
+				font-weight: 600;
+			}
+
+			> dd {
+				font-size: 1.4rem;
+
+				& > ul {
+					text-indent: 1em;
+					list-style: none;
+					font-size: 1.3rem;
+
+					& > li {
+						text-indent: -1em;
+						padding-left: 1em;
+
+						&::before {
+							content: "・";
+						}
+					}
+				}
+				
+				> dl {
+					display: grid;
+					grid-template-columns: 1fr;
+					gap: .5em;
+					font-size: 1.3rem;
+
+					> dt {
+						font-weight: 600;
+					}
+				}
+			}
+		}
+	}
+}

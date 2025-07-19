@@ -20,6 +20,9 @@ const GlobalNavContent: React.FC<GlobalNavContentProps> = ({ isOpen, onClose }) 
 					<Link href="/about" onClick={onClose} data-text="ABOUT">ABOUT</Link>
 				</li>
 				<li className={styles.navItem}>
+					<Link href="/works" onClick={onClose} data-text="WORKS">WORKS</Link>
+				</li>
+				<li className={styles.navItem}>
 					<Link href="/gallery" onClick={onClose} data-text="GALLERY">GALLERY</Link>
 				</li>
 				<li className={styles.navItem}>
