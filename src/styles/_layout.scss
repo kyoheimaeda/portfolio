@@ -26,23 +26,18 @@
 }
 
 .l-title {
+  position: relative;
 	white-space: nowrap;
-  font-size: 10rem;
+  font-size: clamp(5rem, 12vw, 15rem);
 	font-family: var(--font-outfit);
 	font-weight: 800;
 	letter-spacing: .2em;
 	line-height: 1;
-  margin-bottom: 10rem;
+  margin-bottom: 1em;
+  // display: grid;
+  // grid-template-columns: 1fr;
 
-  @include respond(md) {
-    font-size: 8rem;
-  }
-  
-  @include respond(sm) {
-    font-size: 6rem;
-  }
-
-  span {
-    color: var(--color-primary);
+  strong {
+    font-weight: 800;
   }
 }

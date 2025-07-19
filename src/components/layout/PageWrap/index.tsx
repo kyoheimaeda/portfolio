@@ -11,7 +11,7 @@ export default function PageWrap({ title, children }: PageWrapProps) {
       <div className={`l-inner`}>
         {title && (
           <h1 className={`l-title`}>
-            {title}
+            <strong>{title.charAt(0)}</strong>{title.slice(1)}
           </h1>
         )}
         <div className={`l-contents`}>
