@@ -45,7 +45,7 @@ export default function WorksPage() {
 										<dl>
 											<dt>画像アップロード</dt>
 											<dd>新しい画像を Cloudflare R2 にアップロードし、その情報を Supabase データベースに保存。</dd>
-											<dt>画像順序更新</dt>
+											<dt>dnd-kitを使用し、ドラッグ&ドロップで画像順序更新</dt>
 											<dd>ギャラリー内の画像の表示順序を更新。</dd>
 											<dt>画像削除</dt>
 											<dd>Cloudflare R2 から画像を削除し、Supabase データベースからもその情報を削除。</dd>
@@ -88,12 +88,16 @@ export default function WorksPage() {
 									</dd>
 									<dt>React</dt>
 									<dd>useState, useRef, useEffect などの React Hooks を使用して、クライアントサイドのインタラクション（モーダル表示など）を管理。</dd>
+									<dt>Prisma</dt>
+									<dd>ORMとして選択。</dd>
 									<dt>SCSS (CSS Modules)</dt>
 									<dd>page.module.scss や index.module.scss を使用して、コンポーネントごとのスタイルをカプセル化。</dd>
 									<dt>TypeScript</dt>
 									<dd>プロジェクト全体で TypeScript を使用し、PhotoType などの型定義によりコードの堅牢性を向上。</dd>
 									<dt>uuid</dt>
-									<dd>アップロードされる画像ファイルに一意な名前を生成。</dd>
+									<dd>アップロードされる画像ファイルに一意な名前を生成。</dd
+									<dt>dnd-kit</dt>
+									<dd>アップロードした画像一覧画面で表示順をドラッグ&ドロップで並び替え</dd>
 								</dl>
 							</section>
 						</div>
