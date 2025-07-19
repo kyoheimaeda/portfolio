@@ -8,6 +8,7 @@ import { PhotoType } from '@/features/gallery/types/PhotoType';
 import Image from 'next/image';
 import Compressor from 'browser-image-compression';
 import { uploadPhotoAction } from '@/features/gallery/actions';
+import { LuImageUp } from "react-icons/lu";
 import styles from './index.module.scss';
 
 // ----------------------------------------
@@ -25,6 +26,7 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   const [notification, setNotification] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
+  const [fileSize, setFileSize] = useState<number | null>(null); // ファイルサイズを追加
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,6 +42,7 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
       setSelectedFileName(selectedFile.name);
+      setFileSize(selectedFile.size); // ファイルサイズを設定
 
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
@@ -48,12 +51,22 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
     } else {
       setFile(null);
       setSelectedFileName(null);
+      setFileSize(null); // ファイルサイズをクリア
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
         setPreviewImageUrl(null);
       }
     }
     setNotification(null);
+  };
+
+  const formatBytes = (bytes: number, decimals = 2) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   };
 
   const handleUpload = async () => {
@@ -89,6 +102,7 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
       setNotification('画像が正常にアップロードされました！');
       setFile(null);
       setSelectedFileName(null);
+      setFileSize(null); // アップロード後もクリア
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
         setPreviewImageUrl(null);
@@ -110,48 +124,69 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   return (
     <section className={styles.section}>
       <div className={styles.inputArea}>
-        <h2>写真をアップロード</h2>
         {notification && (
           <p className={`${styles.notification} ${notificationClass}`}>
             {notification}
           </p>
         )}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          disabled={uploading}
-          className={styles.fileInput}
-        />
-        <button
-          onClick={handleUpload}
-          disabled={!file || uploading}
-          className={styles.uploadButton}
-        >
-          {uploading ? 'アップロード中...' : 'アップロード'}
-        </button>
-      </div>
+        
+        <div className={styles.uploadArea}>
+          <div className={styles.input}>
+            <div className={styles.inputFile}>
+              <div className={styles.inputText}>
+                <LuImageUp strokeWidth={1} />
+                <p>画像を選択・アップロード</p>
+                <button className={styles.inputButton}>Browse File</button>
+              </div>
+              <input
+                id='fileInput'
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                disabled={uploading}
+              />
+            </div>
+          </div>
 
-      <div className={styles.previewArea}>
-        <div className={styles.imagePreview}>
-          {previewImageUrl ? (
-            <Image
-              src={previewImageUrl}
-              alt="選択された画像のプレビュー"
-              width={300}
-              height={200}
-              layout="responsive"
-              objectFit="contain"
-            />
-          ) : (
-            selectedFileName ? (
-              <p className={styles.fileName}>{selectedFileName}</p>
-            ) : (
-              <p className={styles.noImageText}>画像が選択されていません。</p>
-            )
-          )}
+          <div className={styles.preview}>
+            <div className={styles.previewImage}>
+              {previewImageUrl ? (
+                <figure>
+                  <Image
+                    src={previewImageUrl}
+                    alt="選択された画像のプレビュー"
+                    fill
+                  />
+                </figure>
+              ) : ('')}
+              {file ? (
+              <>
+                <dl className={styles.previewInfo}>
+                  <dt>ファイル名</dt>
+                  <dd>{selectedFileName}</dd>
+                  <dt>サイズ</dt><dd>{fileSize !== null ? formatBytes(fileSize) : 'N/A'}</dd>
+                </dl>
+              </>
+              ) : ('')}
+            </div>
+
+            {file ? (
+            <>
+              <button
+                onClick={handleUpload}
+                disabled={!file || uploading}
+                className={styles.uploadButton}
+              >
+                {uploading ? 'Uploading...' : 'Upload'}
+              </button>
+            </>
+            ) : ('')}
+          </div>
+
         </div>
       </div>
+
+      
     </section>
   );
 }

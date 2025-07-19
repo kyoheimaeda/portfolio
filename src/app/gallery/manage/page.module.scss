@@ -1,82 +1,92 @@
-.section {
-	padding: 4rem 0;
-}
+@use 'styles/base' as *;
 
-.photoUploader {
-
-}
-
-.loadingText {
-
-}
-
+.loadingText,
 .errorText {
-
-}
-
-.publishContainer {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
   text-align: center;
-}
-
-.publishButton {
-  background-color: #0070f3; /* 例: Next.js のプライマリカラー */
-  color: white;
-  padding: 0.8rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease-in-out;
-
-  &:hover {
-    background-color: #005bb5;
-  }
-
-  &:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
+  padding: 20px;
+  font-size: 1.2rem;
+  color: var(--color-text);
 }
 
 .notification {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5); // 半透明のオーバーレイ
+
+  .notificationBox {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    padding: 20px 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 1.1rem;
+  }
 }
 
-.publishStatus {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #555;
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: center;
+  margin-bottom: 20px;
+
+  .tabButton {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    border: 1px solid var(--color-text);
+    padding: 1rem 2rem;
+    cursor: pointer;
+    font-size: 1.4rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    &.active {
+      background-color: var(--color-text);
+      color: var(--color-background);
+    }
+  }
+}
+
+.tabContent {
+  padding: 20px 0;
 }
 
 .savePublishContainer {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
   text-align: center;
-}
+  margin-bottom: 20px;
 
-.savePublishButton {
-  background-color: #0070f3; /* 例: Next.js のプライマリカラー */
-  color: white;
-  padding: 0.8rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s ease-in-out;
-
-  &:hover {
-    background-color: #005bb5;
+  .statusMessage {
+    background-color: var(--color-text-alpha10);
+    color: var(--color-text);
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
   }
 
-  &:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+  .saveButton {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+
+    &:disabled {
+      background-color: var(--color-text-alpha50);
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
   }
 }
 
-.savePublishStatus {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #555;
-}

@@ -2,11 +2,25 @@
 	--color-black: #1B1D21;
 	--color-white: #fff;
 	
+	--color-gray-100: #c6c6c6;
+	--color-gray-200: #919191;
+	--color-gray-300: #5e5e5e;
+	--color-gray-400: #303030;
+	
 	--color-background: #fff;
 	--color-text: #1B1D21;
+	--color-border: #dadde2;
+
+	--color-red: #F44336;
 }
 
 html.dark {
 	--color-background: #1B1D21;
 	--color-text: #fff;
+	--color-border: #393a43;
+
+	--color-gray-100: #414348;
+	--color-gray-200: #6c6e73;
+	--color-gray-300: #999ca1;
+	--color-gray-400: #caccd2;
 }

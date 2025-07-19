@@ -3,7 +3,7 @@
 import { frame, motion, useMotionValue } from "motion/react"
 import { RefObject, useEffect, useRef, useState } from "react"
 
-export default function Drag() {
+export default function MouseFollower() {
   const ref = useRef<HTMLDivElement>(null)
   const { x, y } = useFollowPointer(ref)
 
@@ -68,7 +68,7 @@ export function useFollowPointer(ref: RefObject<HTMLDivElement | null>) {
 
     const handlePointerMove = ({ clientX, clientY }: MouseEvent) => {
       const element = ref.current
-      if (!element) return // null チェックを追加
+      if (!element) return
 
       frame.read(() => {
         x.set(clientX - element.offsetLeft - element.offsetWidth / 2)
@@ -78,7 +78,7 @@ export function useFollowPointer(ref: RefObject<HTMLDivElement | null>) {
 
     window.addEventListener("pointermove", handlePointerMove)
     return () => window.removeEventListener("pointermove", handlePointerMove)
-  }, [ref, x, y])
+  }, [ref, x, y]) // x と y を依存配列に追加
 
   return { x, y }
 }

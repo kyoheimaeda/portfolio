@@ -23,6 +23,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 1.4rem;
+	letter-spacing: .1em;
 }
 
 * {
@@ -40,14 +41,14 @@ a {
 // Layout
 
 .l-wrap {
-  padding: 16rem 0;
+  padding: 16rem 0 8rem;
 
   @include respond(md) {
-    padding: 14rem 0;
+    padding: 14rem 0 7rem;
   }
 
   @include respond(sm) {
-    padding: 12rem 0;
+    padding: 12rem 0 6rem;
   }
 }
 
@@ -58,20 +59,20 @@ a {
 }
 
 .l-contents {
-  margin: 10rem 0;
 }
 
 
 // --------------------------------------------------
 // Components
 
-.c-title {
+.l-title {
 	white-space: nowrap;
   font-size: 10rem;
 	font-family: var(--font-outfit);
 	font-weight: 800;
 	letter-spacing: .2em;
 	line-height: 1;
+  margin-bottom: 10rem;
 
   @include respond(md) {
     font-size: 8rem;

@@ -20,7 +20,7 @@ import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
+  rectSortingStrategy, // rectSortingStrategy をインポート
 } from '@dnd-kit/sortable';
 
 import SortablePhotoItem from '../SortablePhotoItem';
@@ -85,7 +85,7 @@ export default function SortablePhotoList({ photos, onReorder, onDelete }: Sorta
 			>
 				<SortableContext
 					items={photos.map(photo => photo.id)} // props の photos からIDの配列を渡す
-					strategy={verticalListSortingStrategy}
+					strategy={rectSortingStrategy}
 				>
 					{photos.map((photo) => (
 						<SortablePhotoItem

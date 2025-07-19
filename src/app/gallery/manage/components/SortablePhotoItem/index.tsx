@@ -12,7 +12,8 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 // react-icons のインポート
-import { LuGrip } from "react-icons/lu";
+import { LuGripVertical, LuTrash2 } from "react-icons/lu";
+
 
 // SCSS モジュールのインポート
 import styles from './index.module.scss';
@@ -75,17 +76,16 @@ export default function SortablePhotoItem({ photo, onDelete }: SortablePhotoItem
         </figure>
       </div>
       <div className={styles.actions}>
-        <button onClick={handleDeleteClick} disabled={isDeleting} className={styles.deleteButton}>
-          {isDeleting ? '削除中...' : '削除'}
-        </button>
-
         <button
           {...listeners}
           {...attributes}
-          className={styles.dragHandle}
+          className={styles.actionsHandle}
           title="ドラッグして並び替え"
         >
-          <LuGrip size={20} />
+          <LuGripVertical />
+        </button>
+        <button onClick={handleDeleteClick} disabled={isDeleting} className={styles.actionsDelete}>
+          <LuTrash2 />
         </button>
       </div>
     </li>
