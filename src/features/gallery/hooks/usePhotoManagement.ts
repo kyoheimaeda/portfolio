@@ -1,17 +1,17 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { PhotoType } from '../types/PhotoType';
+import { GalleryImageType } from '../types/GalleryImageType';
 import { updatePhotoOrderAction, deletePhotoAction } from '../actions';
 
-export const usePhotoManagement = (initialPhotos: PhotoType[] = []) => {
-  const [photos, setPhotos] = useState<PhotoType[]>(initialPhotos);
+export const usePhotoManagement = (initialPhotos: GalleryImageType[] = []) => {
+  const [photos, setPhotos] = useState<GalleryImageType[]>(initialPhotos);
   const [loading] = useState(false); // データはサーバーから渡されるため、初期ローディングは不要
   const [error, setError] = useState<string | null>(null);
 
   
 
-  const updatePhotoOrder = useCallback(async (reorderedPhotos: PhotoType[]) => {
+  const updatePhotoOrder = useCallback(async (reorderedPhotos: GalleryImageType[]) => {
     try {
       const result = await updatePhotoOrderAction(reorderedPhotos);
 
@@ -28,7 +28,7 @@ export const usePhotoManagement = (initialPhotos: PhotoType[] = []) => {
     }
   }, []);
 
-  const deletePhoto = useCallback(async (photo: PhotoType) => {
+  const deletePhoto = useCallback(async (photo: GalleryImageType) => {
     try {
       const result = await deletePhotoAction(photo);
 

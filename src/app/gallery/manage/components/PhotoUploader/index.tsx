@@ -4,7 +4,7 @@
 // Imports
 
 import { useState, useEffect } from 'react';
-import { PhotoType } from '@/features/gallery/types/PhotoType';
+import { GalleryImageType } from '@/features/gallery/types/GalleryImageType';
 import Image from 'next/image';
 import Compressor from 'browser-image-compression';
 import { uploadPhotoAction } from '@/features/gallery/actions';
@@ -17,7 +17,7 @@ import { motion, AnimatePresence } from 'motion/react';
 // Types
 
 type PhotoUploaderProps = {
-  onUpload: (newPhoto: PhotoType) => void;
+  onUpload: (newPhoto: GalleryImageType) => void;
 };
 
 // ----------------------------------------

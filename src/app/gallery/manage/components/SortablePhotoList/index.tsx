@@ -31,12 +31,12 @@ import styles from './index.module.scss';
 // --------------------------------------------------
 // Types
 
-import { PhotoType } from '@/features/gallery/types/PhotoType';
+import { GalleryImageType } from '@/features/gallery/types/GalleryImageType';
 
 type SortablePhotoListProps = {
-  photos: PhotoType[]; // 表示・並び替え対象の写真リスト
-  onReorder: (reorderedPhotos: PhotoType[]) => void; // 並び替え後に親に通知するコールバック
-  onDelete: (photo: PhotoType) => Promise<void>; // 削除成功時に親に通知するコールバック
+  photos: GalleryImageType[]; // 表示・並び替え対象の写真リスト
+  onReorder: (reorderedPhotos: GalleryImageType[]) => void; // 並び替え後に親に通知するコールバック
+  onDelete: (photo: GalleryImageType) => Promise<void>; // 削除成功時に親に通知するコールバック
 };
 
 

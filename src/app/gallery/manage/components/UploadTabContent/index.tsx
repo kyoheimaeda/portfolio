@@ -2,10 +2,10 @@
 
 import React from 'react';
 import PhotoUploader from '../PhotoUploader';
-import { PhotoType } from '@/features/gallery/types/PhotoType';
+import { GalleryImageType } from '@/features/gallery/types/GalleryImageType';
 
 type UploadTabContentProps = {
-  onPhotoUploaded: (newPhoto: PhotoType) => void;
+  onPhotoUploaded: (newPhoto: GalleryImageType) => void;
 };
 
 export default function UploadTabContent({ onPhotoUploaded }: UploadTabContentProps) {

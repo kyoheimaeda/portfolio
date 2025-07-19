@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { PhotoType } from '@/features/gallery/types/PhotoType';
+import { GalleryImageType } from '@/features/gallery/types/GalleryImageType';
 import styles from '../../page.module.scss';
 import { usePhotoManagement } from '@/features/gallery/hooks/usePhotoManagement';
 
@@ -10,10 +10,10 @@ import UploadTabContent from '../UploadTabContent';
 import ManageTabContent from '../ManageTabContent';
 import Dialog from '@/components/ui/Dialog'; // Dialog をインポート
 
-export default function GalleryManager({ initialPhotos }: { initialPhotos: PhotoType[] }) {
+export default function GalleryManager({ initialPhotos }: { initialPhotos: GalleryImageType[] }) {
   const { photos, setPhotos, loading, error, updatePhotoOrder, deletePhoto } = usePhotoManagement(initialPhotos);
 
-  const [dbPhotosState, setDbPhotosState] = useState<PhotoType[]>([]);
+  const [dbPhotosState, setDbPhotosState] = useState<GalleryImageType[]>([]);
   const [isProcessingSavePublish, setIsProcessingSavePublish] = useState(false);
   const [activeTab, setActiveTab] = useState<'upload' | 'manage'>('upload'); // アクティブなタブの状態
 
@@ -40,14 +40,14 @@ export default function GalleryManager({ initialPhotos }: { initialPhotos: Photo
     }
   }, [loading, photos, dbPhotosState]);
 
-  const handlePhotoUploaded = useCallback((newPhoto: PhotoType) => {
+  const handlePhotoUploaded = useCallback((newPhoto: GalleryImageType) => {
     const updatedPhotos = [...photos, newPhoto].sort((a, b) => a.order - b.order);
     setPhotos(updatedPhotos);
     setDbPhotosState(updatedPhotos);
     showNotification('写真がアップロードされ、公開ページに反映されました！', 'アップロード完了');
   }, [photos, setPhotos, showNotification]);
 
-  const handlePhotoDeleted = useCallback(async (photo: PhotoType) => {
+  const handlePhotoDeleted = useCallback(async (photo: GalleryImageType) => {
     try {
       await deletePhoto(photo);
       showNotification('写真が削除されました。', '削除完了');
@@ -60,7 +60,7 @@ export default function GalleryManager({ initialPhotos }: { initialPhotos: Photo
     }
   }, [deletePhoto, setDbPhotosState, showNotification]);
 
-  const handlePhotosReordered = useCallback((reorderedPhotos: PhotoType[]) => {
+  const handlePhotosReordered = useCallback((reorderedPhotos: GalleryImageType[]) => {
     const updatedPhotosWithOrder = reorderedPhotos.map((photo, index) => ({
       ...photo,
       order: index,

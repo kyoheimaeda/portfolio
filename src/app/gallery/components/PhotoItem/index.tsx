@@ -5,7 +5,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { PhotoType } from '@/features/gallery/types/PhotoType';
+import { GalleryImageType } from '@/features/gallery/types/GalleryImageType';
 
 // SCSS モジュールのインポート
 import styles from "./index.module.scss";
@@ -14,7 +14,7 @@ import styles from "./index.module.scss";
 // Types
 
 type PhotoItemProps = {
-  photo: PhotoType;
+  photo: GalleryImageType;
   onClick: (e: React.MouseEvent<HTMLElement>) => void; // クリックイベントを親から受け取る
 };
 

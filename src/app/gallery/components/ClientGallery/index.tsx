@@ -2,14 +2,14 @@
 
 import { useState, useRef, useEffect } from 'react';
 import PhotoModal from '../PhotoModal';
-import PhotoItem from '../PhotoItem'; // PhotoItem をインポートするように変更
+import PhotoItem from '../PhotoItem';
 import styles from "./index.module.scss";
-import { PhotoType } from '@/features/gallery/types/PhotoType';
+import { GalleryImageType } from '@/features/gallery/types/GalleryImageType';
 
 export default function ClientGallery({
   photos
 }: {
-  photos: PhotoType[]
+  photos: GalleryImageType[]
 }) {
   const [selectedPhotoUrl, setSelectedPhotoUrl] = useState<string | null>(null);
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);

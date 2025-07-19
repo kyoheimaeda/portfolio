@@ -5,7 +5,7 @@
 // --------------------------------------------------
 
 import React, { useState } from 'react';
-import { PhotoType } from '@/features/gallery/types/PhotoType';
+import { GalleryImageType } from '@/features/gallery/types/GalleryImageType';
 
 // dnd-kit のインポート
 import { useSortable } from '@dnd-kit/sortable';
@@ -24,8 +24,8 @@ import Dialog from '@/components/ui/Dialog'; // Dialog をインポート
 // Types
 
 interface SortablePhotoItemProps {
-  photo: PhotoType;
-  onDelete: (photo: PhotoType) => Promise<void>;
+  photo: GalleryImageType;
+  onDelete: (photo: GalleryImageType) => Promise<void>;
 }
 
 

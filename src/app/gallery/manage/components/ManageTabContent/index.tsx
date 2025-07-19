@@ -2,14 +2,14 @@
 
 import React from 'react';
 import SortablePhotoList from '../SortablePhotoList';
-import { PhotoType } from '@/features/gallery/types/PhotoType';
+import { GalleryImageType } from '@/features/gallery/types/GalleryImageType';
 import { motion, AnimatePresence } from 'motion/react'; // motion をインポート
 import styles from './index.module.scss'; // index.module.scss を参照
 
 type ManageTabContentProps = {
-  photos: PhotoType[];
-  onReorder: (reorderedPhotos: PhotoType[]) => void;
-  onDelete: (photo: PhotoType) => Promise<void>;
+  photos: GalleryImageType[];
+  onReorder: (reorderedPhotos: GalleryImageType[]) => void;
+  onDelete: (photo: GalleryImageType) => Promise<void>;
   onSaveAndPublish: () => Promise<void>;
   isProcessingSavePublish: boolean;
   hasPendingReorderChanges: () => boolean;
