@@ -95,7 +95,7 @@ export default function WorksPage() {
 									<dt>TypeScript</dt>
 									<dd>プロジェクト全体で TypeScript を使用し、PhotoType などの型定義によりコードの堅牢性を向上。</dd>
 									<dt>uuid</dt>
-									<dd>アップロードされる画像ファイルに一意な名前を生成。</dd
+									<dd>アップロードされる画像ファイルに一意な名前を生成。</dd>
 									<dt>dnd-kit</dt>
 									<dd>アップロードした画像一覧画面で表示順をドラッグ&ドロップで並び替え</dd>
 								</dl>
