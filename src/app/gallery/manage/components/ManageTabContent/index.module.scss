@@ -1,0 +1,17 @@
+@use 'styles/base' as *;
+@use 'styles/breakpoints' as bp;
+
+.savePublishButtonFixedContainer {
+  position: fixed;
+  bottom: 2rem;
+	left: 0;
+	width: 100%;
+  z-index: 999;
+	display: flex;
+	justify-content: center;
+
+  .saveButtonFixed {
+    width: 100%;
+		max-width: 30rem;
+  }
+}

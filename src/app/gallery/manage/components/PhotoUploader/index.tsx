@@ -10,6 +10,8 @@ import Compressor from 'browser-image-compression';
 import { uploadPhotoAction } from '@/features/gallery/actions';
 import { LuImageUp } from "react-icons/lu";
 import styles from './index.module.scss';
+import Dialog from '@/components/ui/Dialog'; // Dialog をインポート
+import { motion, AnimatePresence } from 'motion/react';
 
 // ----------------------------------------
 // Types
@@ -28,6 +30,7 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<number | null>(null); // ファイルサイズを追加
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false); // 確認モーダルの表示状態
 
   useEffect(() => {
     return () => {
@@ -67,6 +70,26 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  };
+
+  // 確認モーダルを表示するハンドラ
+  const handleConfirmUploadClick = () => {
+    if (file) {
+      setShowConfirmModal(true);
+    } else {
+      setNotification('ファイルが選択されていません。');
+    }
+  };
+
+  // モーダル内の「アップロード」ボタンが押された時のハンドラ
+  const handleModalUploadConfirm = async () => {
+    setShowConfirmModal(false); // モーダルを閉じる
+    await handleUpload(); // 実際のアップロード処理を実行
+  };
+
+  // モーダル内の「キャンセル」ボタンが押された時のハンドラ
+  const handleModalCancel = () => {
+    setShowConfirmModal(false);
   };
 
   const handleUpload = async () => {
@@ -136,7 +159,7 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
               <div className={styles.inputText}>
                 <LuImageUp strokeWidth={1} />
                 <p>画像を選択・アップロード</p>
-                <button className={styles.inputButton}>Browse File</button>
+                <button className={`c-button ${styles.inputButton}`}>Browse File</button>
               </div>
               <input
                 id='fileInput'
@@ -148,45 +171,77 @@ export default function PhotoUploader({ onUpload }: PhotoUploaderProps) {
             </div>
           </div>
 
-          <div className={styles.preview}>
-            <div className={styles.previewImage}>
-              {previewImageUrl ? (
-                <figure>
-                  <Image
-                    src={previewImageUrl}
-                    alt="選択された画像のプレビュー"
-                    fill
-                  />
-                </figure>
-              ) : ('')}
-              {file ? (
-              <>
-                <dl className={styles.previewInfo}>
-                  <dt>ファイル名</dt>
-                  <dd>{selectedFileName}</dd>
-                  <dt>サイズ</dt><dd>{fileSize !== null ? formatBytes(fileSize) : 'N/A'}</dd>
-                </dl>
-              </>
-              ) : ('')}
+          {file && (
+            <div className={styles.preview}>
+              <div className={styles.previewImage}>
+                {previewImageUrl ? (
+                  <figure>
+                    <Image
+                      src={previewImageUrl}
+                      alt="選択された画像のプレビュー"
+                      fill
+                    />
+                  </figure>
+                ) : (
+                  <p className={styles.noImageText}>画像プレビュー</p>
+                )}
+              </div>
+              <div className={styles.fileInfo}>
+                <p>ファイル名: {selectedFileName}</p>
+                <p>サイズ: {fileSize !== null ? formatBytes(fileSize) : 'N/A'}</p>
+              </div>
             </div>
+          )}
 
-            {file ? (
-            <>
-              <button
-                onClick={handleUpload}
-                disabled={!file || uploading}
-                className={styles.uploadButton}
+          <AnimatePresence>
+            {file && (
+              <motion.div
+                className={`${styles.uploadButtonWrap}`}
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 100, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20 }}
               >
-                {uploading ? 'Uploading...' : 'Upload'}
-              </button>
-            </>
-            ) : ('')}
-          </div>
-
+                <button
+                  onClick={handleConfirmUploadClick}
+                  disabled={!file || uploading}
+                  className={`c-button ${styles.uploadButton}`}
+                >
+                  {uploading ? 'アップロード中...' : 'アップロードする'}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      
+      {/* 確認モーダル */}
+      <Dialog
+        isOpen={showConfirmModal}
+        onClose={handleModalCancel}
+        onConfirm={handleModalUploadConfirm}
+        title="アップロードの確認"
+        message={(
+          <>
+            <p>以下の画像をアップロードしますか？</p>
+            <div className={styles.confirmImagePreview}>
+              {previewImageUrl && (
+                <Image
+                  src={previewImageUrl}
+                  alt="確認プレビュー"
+                  fill
+                  objectFit="contain"
+                />
+              )}
+            </div>
+            <p>ファイル名: {selectedFileName}</p>
+            <p>サイズ: {fileSize !== null ? formatBytes(fileSize) : 'N/A'}</p>
+          </>
+        )}
+        confirmText="アップロード"
+        cancelText="キャンセル"
+        isProcessing={uploading}
+      />
     </section>
   );
 }

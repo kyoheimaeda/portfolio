@@ -1,4 +1,5 @@
 @use 'styles/base' as *;
+@use 'styles/breakpoints' as bp;
 
 .loadingText,
 .errorText {
@@ -32,61 +33,7 @@
 }
 
 .tabs {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
+  display: flex;
   justify-content: center;
-  margin-bottom: 20px;
-
-  .tabButton {
-    background-color: var(--color-background);
-    color: var(--color-text);
-    border: 1px solid var(--color-text);
-    padding: 1rem 2rem;
-    cursor: pointer;
-    font-size: 1.4rem;
-    transition: background-color 0.3s ease, color 0.3s ease;
-
-    &.active {
-      background-color: var(--color-text);
-      color: var(--color-background);
-    }
-  }
+  margin-bottom: 4rem;
 }
-
-.tabContent {
-  padding: 20px 0;
-}
-
-.savePublishContainer {
-  text-align: center;
-  margin-bottom: 20px;
-
-  .statusMessage {
-    background-color: var(--color-text-alpha10);
-    color: var(--color-text);
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-  }
-
-  .saveButton {
-    background-color: var(--color-primary);
-    color: var(--color-white);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-
-    &:disabled {
-      background-color: var(--color-text-alpha50);
-      cursor: not-allowed;
-    }
-
-    &:hover:not(:disabled) {
-      filter: brightness(1.1);
-    }
-  }
-}
-

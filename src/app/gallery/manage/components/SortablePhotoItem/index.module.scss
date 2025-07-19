@@ -21,6 +21,10 @@
 	border: 1px solid var(--color-gray-200);
 	background: var(--color-background);
 
+	@include respond(sm) {
+		grid-template-columns: 1fr 100px;
+	}
+
 	.imageBox {
 		position: relative;
 		width: 100%;
@@ -48,6 +52,12 @@
 		grid-template-columns: repeat(2, 1fr);
 		border-top: 1px solid var(--color-gray-200);
 
+		@include respond(sm) {
+			grid-template-columns: repeat(1, 1fr);
+			border-top: 0;
+			border-left: 1px solid var(--color-gray-200);
+		}
+
 		button {
 			background: none;
 			border: 0;
@@ -57,6 +67,11 @@
 			padding: 1rem 2rem;
 			font-size: 2rem;
 			border-left: 1px solid var(--color-gray-300);
+
+			@include respond(sm) {
+				border-left: 0;
+				border-top: 1px solid var(--color-gray-200);
+			}
 
 			&:first-of-type {
 				border: none;

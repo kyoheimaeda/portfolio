@@ -1,5 +1,7 @@
 @use 'styles/base' as *;
 @use 'styles/variables' as *;
+@use 'styles/components';
+@use 'styles/layout';
 
 :root {
   --background: #ffffff;
@@ -15,7 +17,9 @@ html {
 
 html,
 body {
+  position: relative;
   max-width: 100vw;
+  min-height: 100svh;
   overflow-x: hidden;
 }
 
@@ -24,6 +28,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 1.4rem;
 	letter-spacing: .1em;
+  padding-bottom: 5rem;
 }
 
 * {
@@ -35,54 +40,4 @@ body {
 a {
   color: inherit;
   text-decoration: none;
-}
-
-// --------------------------------------------------
-// Layout
-
-.l-wrap {
-  padding: 16rem 0 8rem;
-
-  @include respond(md) {
-    padding: 14rem 0 7rem;
-  }
-
-  @include respond(sm) {
-    padding: 12rem 0 6rem;
-  }
-}
-
-.l-inner {
-  width: 90vw;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.l-contents {
-}
-
-
-// --------------------------------------------------
-// Components
-
-.l-title {
-	white-space: nowrap;
-  font-size: 10rem;
-	font-family: var(--font-outfit);
-	font-weight: 800;
-	letter-spacing: .2em;
-	line-height: 1;
-  margin-bottom: 10rem;
-
-  @include respond(md) {
-    font-size: 8rem;
-  }
-  
-  @include respond(sm) {
-    font-size: 6rem;
-  }
-
-  span {
-    color: var(--color-primary);
-  }
 }

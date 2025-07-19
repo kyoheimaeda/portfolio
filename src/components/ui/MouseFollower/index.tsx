@@ -10,42 +10,48 @@ export default function MouseFollower() {
   const [isTextHover, setIsTextHover] = useState(false)
   const [isLinkHover, setIsLinkHover] = useState(false)
   const [fontSize, setFontSize] = useState(16)
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const interactiveTags = ["a", "button"] // リンク判定に追加したいタグ一覧
+    // クライアントサイドでのみ実行
+    if (typeof window !== "undefined") {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
 
-    const handlePointerMove = (e: PointerEvent) => {
-      const target = e.target as HTMLElement | null
-      if (!target) return
+      const interactiveTags = ["a", "button", "input"] // リンク判定に追加したいタグ一覧
 
-      // 配列内のいずれかのタグを closest で持つかチェック
-      const isInteractive = interactiveTags.some(tag => target.closest(tag))
+      const handlePointerMove = (e: PointerEvent) => {
+        const target = e.target as HTMLElement | null
+        if (!target) return
 
-      if (isInteractive) {
-        setIsLinkHover(true)
-        setIsTextHover(false)
-        return
+        // 配列内のいずれかのタグを closest で持つかチェック
+        const isInteractive = interactiveTags.some(tag => target.closest(tag))
+
+        if (isInteractive) {
+          setIsLinkHover(true)
+          setIsTextHover(false)
+          return
+        }
+
+        // テキスト要素判定
+        const textTags = ["P", "H1", "H2", "H3", "H4", "H5", "H6", "LABEL", "LI", "TD", "TH", "STRONG"]
+        if (textTags.includes(target.tagName)) {
+          const style = window.getComputedStyle(target)
+          const fs = parseFloat(style.fontSize) || 16
+          setFontSize(fs)
+          setIsTextHover(true)
+          setIsLinkHover(false)
+        } else {
+          setIsTextHover(false)
+          setIsLinkHover(false)
+        }
       }
 
-      // テキスト要素判定
-      const textTags = ["P", "H1", "H2", "H3", "H4", "H5", "H6", "LABEL", "LI", "TD", "TH", "STRONG"]
-      if (textTags.includes(target.tagName)) {
-        const style = window.getComputedStyle(target)
-        const fs = parseFloat(style.fontSize) || 16
-        setFontSize(fs)
-        setIsTextHover(true)
-        setIsLinkHover(false)
-      } else {
-        setIsTextHover(false)
-        setIsLinkHover(false)
-      }
+      window.addEventListener("pointermove", handlePointerMove)
+      return () => window.removeEventListener("pointermove", handlePointerMove)
     }
-
-    window.addEventListener("pointermove", handlePointerMove)
-    return () => window.removeEventListener("pointermove", handlePointerMove)
   }, [])
 
-  if (typeof window !== "undefined" && window.matchMedia("(max-width: 768px)").matches) {
+  if (isMobile) {
     return null
   }
 
@@ -78,7 +84,7 @@ export function useFollowPointer(ref: RefObject<HTMLDivElement | null>) {
 
     window.addEventListener("pointermove", handlePointerMove)
     return () => window.removeEventListener("pointermove", handlePointerMove)
-  }, [ref, x, y]) // x と y を依存配列に追加
+  }, [ref, x, y])
 
   return { x, y }
 }

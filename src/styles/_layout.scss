@@ -1,0 +1,48 @@
+@use 'styles/base' as *;
+@use 'styles/variables' as *;
+
+// --------------------------------------------------
+// Layout
+
+.l-wrap {
+  padding: 16rem 0 8rem;
+
+  @include respond(md) {
+    padding: 14rem 0 7rem;
+  }
+
+  @include respond(sm) {
+    padding: 12rem 0 6rem;
+  }
+}
+
+.l-inner {
+  width: 90vw;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.l-contents {
+}
+
+.l-title {
+	white-space: nowrap;
+  font-size: 10rem;
+	font-family: var(--font-outfit);
+	font-weight: 800;
+	letter-spacing: .2em;
+	line-height: 1;
+  margin-bottom: 10rem;
+
+  @include respond(md) {
+    font-size: 8rem;
+  }
+  
+  @include respond(sm) {
+    font-size: 6rem;
+  }
+
+  span {
+    color: var(--color-primary);
+  }
+}
