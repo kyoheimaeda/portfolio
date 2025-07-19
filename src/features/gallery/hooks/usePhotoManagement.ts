@@ -1,41 +1,15 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { createClient } from '@/lib/supabaseClient';
+import { useState, useCallback } from 'react';
 import { PhotoType } from '../types/PhotoType';
 import { updatePhotoOrderAction, deletePhotoAction } from '../actions';
 
-export const usePhotoManagement = () => {
-  const [photos, setPhotos] = useState<PhotoType[]>([]);
-  const [loading, setLoading] = useState(true);
+export const usePhotoManagement = (initialPhotos: PhotoType[] = []) => {
+  const [photos, setPhotos] = useState<PhotoType[]>(initialPhotos);
+  const [loading] = useState(false); // データはサーバーから渡されるため、初期ローディングは不要
   const [error, setError] = useState<string | null>(null);
 
-  const supabase = useMemo(() => createClient(), []);
-
-  const fetchPhotos = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('gallery_images')
-        .select('*')
-        .order('order', { ascending: true })
-        .order('created_at', { ascending: false });
-
-      if (fetchError) {
-        throw new Error(fetchError.message);
-      }
-      setPhotos(data as PhotoType[]);
-    } catch (err: unknown) {
-      let errorMessage = '写真の取得に失敗しました。';
-      if (err instanceof Error) {
-        errorMessage = err.message;
-      }
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, [supabase]);
+  
 
   const updatePhotoOrder = useCallback(async (reorderedPhotos: PhotoType[]) => {
     try {
@@ -70,9 +44,5 @@ export const usePhotoManagement = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchPhotos();
-  }, [fetchPhotos]);
-
-  return { photos, setPhotos, loading, error, fetchPhotos, updatePhotoOrder, deletePhoto };
+  return { photos, setPhotos, loading, error, updatePhotoOrder, deletePhoto };
 };

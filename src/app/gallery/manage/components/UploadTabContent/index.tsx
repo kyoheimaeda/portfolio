@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import PhotoUploader from './PhotoUploader';
+import PhotoUploader from '../PhotoUploader';
 import { PhotoType } from '@/features/gallery/types/PhotoType';
 
 type UploadTabContentProps = {
